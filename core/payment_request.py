@@ -227,3 +227,24 @@ def request_settlement_completed(request,account_number,transaction_id):
     }
     return render(request,'payment_request/request_settlement_completed.html',context)
 
+
+
+
+def delete_payment_request(request,account_number,transaction_id):
+    sender = request.user
+    sender_account = sender.account
+
+    try:
+        account = Account.objects.get(account_number=account_number)
+        transaction = Transaction.objects.get(transaction_id=transaction_id)
+
+        if request.user == transaction.user:
+            transaction.delete()
+            messages.success(request,'Payment Request Deleted Successfully.')
+            return redirect('core:transactions')
+        else:
+            messages.error(request,'You are not authorized to delete this.')
+            return redirect('core:transactions')
+    except:
+        messages.error(request,'Transfer does not Exist!!!')
+        return redirect('account:account')

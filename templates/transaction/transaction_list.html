@@ -192,12 +192,12 @@
                                                             <td>
                                                                 {% if s.transaction_status == "request_sent" %}
                                                                 <a href="{% url 'core:request_details_sent' s.transaction_id %}" class="btn btn-primary"><i class="fas fa-eye"></i> View</a>
-                                                                <a href="{core:delete-request' s.sender.account.account_number s.transaction_id %}" class=" btn btn-danger"> <i class="fas fa-x"></i> Delete</a>
+                                                                <a href="{% url 'core:delete_payment_request' s.sender.account.account_number s.transaction_id %}" class=" btn btn-danger"> <i class="fas fa-x"></i> Delete</a>
                                                                 {% endif %}
 
                                                                 {% if s.transaction_status == "request_processing" %}
                                                                 <a href="{% url 'core:request_details_sent' s.transaction_id %}" class="btn btn-primary"><i class="fas fa-eye"></i> View</a>
-                                                                <a href="{ 'core:delete-request' s.sender.account.account_number s.transaction_id %}" class=" btn btn-danger"> <i class="fas fa-x"></i> Delete</a>
+                                                                <a href="{% url 'core:delete_payment_request' s.sender.account.account_number s.transaction_id %}" class=" btn btn-danger"> <i class="fas fa-x"></i> Delete</a>
                                                                 {% endif %}
 
                                                                 {% if s.transaction_status == "request_settled" %}
@@ -267,7 +267,7 @@
                                                                 {% if r.transaction_status == "request_sent" %}
                                                                     <a href="{% url 'core:request_settlement_confirmation' r.sender.account.account_number r.transaction_id %}" class="btn btn-success"><i class="fas fa-check-circle"></i> Settle</a>
                                                                     <a href="{% url 'core:request_details_received' r.transaction_id %}" class=" btn btn-primary"> <i class="fas fa-eye"></i> View</a>
-                                                                    <a href="" class=" btn btn-danger"> <i class="fas fa-x"></i> Cancel</a>
+                                                                    <a href="{% url 'core:delete_payment_request' r.sender.account.account_number r.transaction_id %}" class=" btn btn-danger"> <i class="fas fa-x"></i> Cancel</a>
                                                                 {% endif %}
 
                                                                 {% if r.transaction_status == "request_settled" %}
