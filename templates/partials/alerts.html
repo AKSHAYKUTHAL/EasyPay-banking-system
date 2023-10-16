@@ -3,8 +3,8 @@
         <div id="message" class="container">
             {% for message in messages %}
                 <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% endif %}" role="alert">
-                    <span style="font-weight: bold;">{% if message.tags == 'error' %}Error: {% endif %}</span>
-                    {{ message }}
+                    <b><span style="font-weight: bold;">{% if message.tags == 'error' %}Error: {% endif %}</span>
+                    {{ message }}</b>
                 </div>
             {% endfor %}
         </div>

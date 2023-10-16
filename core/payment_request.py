@@ -106,7 +106,7 @@ def amount_request_final_process(request, account_number,transaction_id):
             transaction.transaction_status = 'request_sent'
             transaction.save()
 
-            messages.success(request,'Your payment request hav been sent successfully. ')
+            messages.success(request,'Your payment request have been sent successfully. ')
             time.sleep(1)
             return redirect('core:amount_request_completed',account.account_number,transaction.transaction_id)
         else:

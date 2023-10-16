@@ -7,8 +7,8 @@ from django.shortcuts import render, redirect
 
 @login_required
 def transaction_list(request):
-    sent_transaction = Transaction.objects.filter(sender=request.user,transaction_type='transfer').order_by('-id')
-    recieved_transaction = Transaction.objects.filter(reciever=request.user,transaction_type='transfer').order_by('-id')
+    sent_transaction = Transaction.objects.filter(sender=request.user,transaction_type='transfer').order_by('date')
+    recieved_transaction = Transaction.objects.filter(reciever=request.user,transaction_type='transfer').order_by('date')
 
 
     request_sent_transaction = Transaction.objects.filter(sender=request.user, transaction_type="request")
