@@ -3,6 +3,10 @@ from account.models import KYC, Account
 from account.forms import KYCForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from core.forms import CreditCardForm
+from core.models import CreditCard
+import datetime
+
 
 
 def account(request): 
@@ -54,6 +58,9 @@ def kyc_registration(request):
 
 
 def dashboard(request):
+    month = datetime.datetime.now().month
+    year = datetime.datetime.now().year + 5
+
     if request.user.is_authenticated:
         try:
             kyc = KYC.objects.get(user=request.user)
@@ -62,12 +69,33 @@ def dashboard(request):
             return redirect('account:kyc_reg')
         
         account = Account.objects.get(user=request.user)
+        credit_card = CreditCard.objects.filter(user=request.user)
+
+        if request.method == 'POST':
+            form = CreditCardForm(request.POST)
+            if form.is_valid():
+                new_form = form.save(commit=False)
+                new_form.user = request.user
+                new_form.name = request.user.kyc.full_name
+                # new_form.amount = request.user.account.account_balance
+                new_form.save()
+
+                card_id = new_form.card_id
+                messages.success(request,'Card Added Successfully.')
+                return redirect('account:dashboard')
+        else:
+            form = CreditCardForm()
+
     else:
         messages.error(request,'You need to login to access the dashboard')
         return redirect('userauths:sign_in')
     
     context = {
         'kyc':kyc,
-        'account':account
+        'account':account,
+        'form':form,
+        'month':month,
+        'year':year,
+        'credit_card':credit_card,
     }
     return render(request,'account/dashboard.html',context)

@@ -3,6 +3,7 @@ from userauths.models import User
 from account.models import Account
 from shortuuid.django_fields import ShortUUIDField
 from decimal import Decimal,ROUND_HALF_UP
+import datetime
 
 
 TRANSACTION_TYPE = (
@@ -25,6 +26,38 @@ TRANSACTION_STATUS = (
     ('request_processing' ,'Request Processing'),
     ('request_settled' ,'Request Settled' ),
 )
+
+CARD_TYPE = (
+    ("master", "Master"),
+    ("visa", "Visa"),
+    ("rupay", "Rupay"),
+
+)
+
+CARD_TIER = (
+    ("classic","Classic"),
+    ("gold","Gold"),
+    ("platinum","Platinum"),
+    ("signature","Signature"),
+    ("infinite","Infinite"),
+
+)
+
+
+NOTIFICATION_TYPE = (
+    ("None", "None"),
+    ("Transfer", "Transfer"),
+    ("Credit Alert", "Credit Alert"),
+    ("Debit Alert", "Debit Alert"),
+    ("Sent Payment Request", "Sent Payment Request"),
+    ("Recieved Payment Request", "Recieved Payment Request"),
+    ("Funded Credit Card", "Funded Credit Card"),
+    ("Withdrew Credit Card Funds", "Withdrew Credit Card Funds"),
+    ("Deleted Credit Card", "Deleted Credit Card"),
+    ("Added Credit Card", "Added Credit Card"),
+
+)
+
 
 
 class Transaction(models.Model):
@@ -67,3 +100,33 @@ class Transaction(models.Model):
             return f"{self.user}"
         except:
             return f"Transaction"
+        
+
+class CreditCard(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    card_id = ShortUUIDField(unique=True, length=5, max_length=20, prefix="CARD", alphabet="1234567890")
+    card_pin_number = ShortUUIDField(length=4, max_length=4, alphabet="1234567890")
+
+
+    name = models.CharField(max_length=100)
+    number = ShortUUIDField(length=14, max_length=14,prefix="47", alphabet="1234567890")
+    month = models.IntegerField(default=datetime.datetime.now().month)
+    year = models.IntegerField(default=datetime.datetime.now().year + 5)
+    cvv = ShortUUIDField(length=3, max_length=3, alphabet="1234567890")
+
+    amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+
+    card_type = models.CharField(choices=CARD_TYPE, max_length=20, default="master")
+    card_tier = models.CharField(choices=CARD_TIER, max_length=20, default="classic")
+    card_status = models.BooleanField(default=True)
+
+    date = models.DateTimeField(auto_now_add=True)
+
+    def format_card_number(self):
+        formatted_number  = ' '.join([self.number[i:i + 4] for i in range(0, len(self.number), 4)])
+        return formatted_number 
+
+    def __str__(self):
+        return f"{self.user}"
+    
+
