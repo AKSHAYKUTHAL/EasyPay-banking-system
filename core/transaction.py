@@ -7,12 +7,12 @@ from django.shortcuts import render, redirect
 
 @login_required
 def transaction_list(request):
-    sent_transaction = Transaction.objects.filter(sender=request.user,transaction_type='transfer').order_by('date')
-    recieved_transaction = Transaction.objects.filter(reciever=request.user,transaction_type='transfer').order_by('date')
+    sent_transaction = Transaction.objects.filter(sender=request.user,transaction_type='transfer').order_by('-id')
+    recieved_transaction = Transaction.objects.filter(reciever=request.user,transaction_type='transfer').order_by('-id')
 
 
-    request_sent_transaction = Transaction.objects.filter(sender=request.user, transaction_type="request")
-    request_recieved_transaction = Transaction.objects.filter(reciever=request.user, transaction_type="request")
+    request_sent_transaction = Transaction.objects.filter(sender=request.user, transaction_type="request").order_by('-id')
+    request_recieved_transaction = Transaction.objects.filter(reciever=request.user, transaction_type="request").order_by('-id')
 
     context = {
         "sent_transaction":sent_transaction,

@@ -126,6 +126,10 @@ class CreditCard(models.Model):
         formatted_number  = ' '.join([self.number[i:i + 4] for i in range(0, len(self.number), 4)])
         return formatted_number 
 
+    def year_in_two_digits(self):
+        year_in_two_digits = self.year % 100
+        return year_in_two_digits
+
     def __str__(self):
         return f"{self.user}"
     
