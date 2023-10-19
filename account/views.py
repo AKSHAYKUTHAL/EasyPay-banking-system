@@ -4,7 +4,7 @@ from account.forms import KYCForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from core.forms import CreditCardForm
-from core.models import CreditCard
+from core.models import CreditCard,Notification,History
 import datetime
 
 
@@ -80,7 +80,23 @@ def dashboard(request):
                 # new_form.amount = request.user.account.account_balance
                 new_form.save()
 
-                card_id = new_form.card_id
+                credit_card_id = new_form.credit_card_id
+
+                Notification.objects.create(
+                    user=request.user,
+                    notification_type="Added Credit Card",
+                    card_number = new_form.format_card_number(),
+                    card_type = new_form.card_type,
+                    card_tier = new_form.card_tier
+                )
+                History.objects.create(
+                    user=request.user,
+                    history_type="Added Credit Card",
+                    card_number = new_form.format_card_number(),
+                    card_type = new_form.card_type,
+                    card_tier = new_form.card_tier
+                )
+
                 messages.success(request,'Card Added Successfully.')
                 return redirect('account:dashboard')
         else:

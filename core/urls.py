@@ -1,5 +1,5 @@
 from django.urls import path
-from core import views,transfer,transaction,payment_request
+from core import notificaton_and_history, views,transfer,transaction,payment_request,credit_card
 
 
 app_name = "core"
@@ -36,5 +36,22 @@ urlpatterns = [
     path('request_settlement_processing/<account_number>/<transaction_id>/',payment_request.request_settlement_processing,name='request_settlement_processing'),
     path('request_settlement_completed/<account_number>/<transaction_id>/',payment_request.request_settlement_completed,name='request_settlement_completed'),
     path('delete_payment_request/<account_number>/<transaction_id>/',payment_request.delete_payment_request,name='delete_payment_request'),
+
+
+
+    # credit card
+
+    path('credit_card_detail/<credit_card_id>/',credit_card.credit_card_detail,name='credit_card_detail'),
+    path('fund_credit_card/<credit_card_id>/',credit_card.fund_credit_card,name='fund_credit_card'),
+    path('withdraw_fund_from_credit_card/<credit_card_id>/',credit_card.withdraw_fund_from_credit_card,name='withdraw_fund_from_credit_card'),
+    path('delete_credit_card/<credit_card_id>/',credit_card.delete_credit_card,name='delete_credit_card'),
+    path('deactivate_credit_card/<credit_card_id>/',credit_card.deactivate_credit_card,name='deactivate_credit_card'),
+
+
+    # notifications
+
+    path('notification_detail/<nid>/',notificaton_and_history.notification_detail,name='notification_detail'),
+    path('history_detail/<nid>/',notificaton_and_history.history_detail,name='history_detail'),
+
 
 ]

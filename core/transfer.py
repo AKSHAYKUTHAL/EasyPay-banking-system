@@ -3,7 +3,7 @@ from account.models import Account
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib import messages
-from core.models import Transaction
+from core.models import Transaction,Notification,History
 import time
 from decimal import Decimal
 
@@ -117,7 +117,6 @@ def transfer_process(request,account_number,transaction_id):
     completed = False
     if request.method == 'POST':
         pin_number = request.POST.get('pin_number')
-        print(f" pin_numer = {pin_number}")
 
         if pin_number == sender_account.pin_number:
             transaction.transaction_status = "completed"
@@ -130,6 +129,41 @@ def transfer_process(request,account_number,transaction_id):
             # add the monney to the reciever after the fee
             reciever_account.account_balance +=  transaction.receiving_amount()
             account.save()
+
+            Notification.objects.create(
+                amount=transaction.receiving_amount(),
+                user=account.user,
+                notification_type="Credit Alert",
+                sender = request.user,
+                receiver = account.user,
+                transaction_id = transaction.transaction_id
+            )
+            History.objects.create(
+                amount=transaction.receiving_amount(),
+                user=account.user,
+                history_type="Credit Alert",
+                sender = request.user,
+                receiver = account.user,
+                transaction_id = transaction.transaction_id
+            )
+            
+            Notification.objects.create(
+                user=sender,
+                notification_type="Debit Alert",
+                amount=transaction.amount,
+                sender = request.user,
+                receiver = account.user,
+                transaction_id = transaction.transaction_id
+            )
+            History.objects.create(
+                user=sender,
+                history_type="Debit Alert",
+                amount=transaction.amount,
+                sender = request.user,
+                receiver = account.user,
+                transaction_id = transaction.transaction_id
+            )
+
 
             messages.success(request,'Transfer Successful')
             time.sleep(1)

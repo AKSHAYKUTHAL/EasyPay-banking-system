@@ -365,14 +365,14 @@
                                 </div>
                                 <div class="row">               
                                     {% for c in credit_card %}
-                                        <a href="{  'core:card-detail' c.card_id %}">
+                                        <a href="{% url 'core:credit_card_detail' c.credit_card_id %}">
                                             <div class="col-12">
                                                 <div class="card__main" style="height: 210px;">
                                                     <div class="{% if c.card_type == 'rupay' %}Front_card{% endif %}    {% if c.card_type == 'master' %}masterCard{% endif %}    {% if c.card_type == 'visa' %}visaCard{% endif %}">
                                                     <div class="top_card"  style="padding: 15px;">
                                                         <span class="visa">{{c.card_type|upper}}  <small style="font-weight: lighter; font-size:11px" class="{% if c.card_tier == 'classic' %}classic_card{% endif %}    {% if c.card_type == 'gold' %}gold_card{% endif %}    {% if c.card_type == 'platinum' %}platinum_card{% endif %}   {% if c.card_type == 'signature' %}signature_card{% endif %}  {% if c.card_type == 'infinite' %}infinite_card{% endif %}">{{c.card_tier|upper}}</small> </span>  
                                                         <div class="logo">
-                                                            <img src="{% static 'assets1/images/logo.png' %}" class="logo" alt="logo">
+                                                            <img src="{% static 'assets1/images/easypay_logo.png' %}" alt="logo">
                                                             <div class="image-container" style="display: flex;">
                                                                 <img src="{% static 'assets1/images/icon/chip.png' %}"  alt="" style="width: 40px; height: 35px; margin-left: 75px; margin-top: 25px;">  
                                                                 <img src="{% static 'assets1/images/icon/sigmal_icon.png' %}"  alt="" style="width: 18px; height: 28px; margin-left: 3px;  margin-top: 28px;">    
@@ -386,6 +386,13 @@
                                                             <div class="card_holder_name">₹ {{c.amount|intcomma }} </div>                                  
                                                             <div class="card_number">{{c.format_card_number}}</div>
                                                             <div class="card_holder_name">{{c.name}}</div>
+                                                            <div>
+                                                                {% if c.card_status == True %}
+                                                                <span style="color: rgb(4, 203, 4); font-weight: bolder;">Active</span>
+                                                                {% else %}
+                                                                <span style="color: #fc0034; font-weight: bold;">In-Active</span>
+                                                                {% endif %}
+                                                            </div>
                                                         </div>
                                                         <div class="card_info">
                                                         <div class="card_holder_info" style="margin-top: 40px;">
@@ -400,7 +407,7 @@
                                                     <div class="top_card">
                                                         <span class="black_strip"></span>
                                                         <div class="cvc_strip">
-                                                        <span class="cvc_number">000</span>
+                                                        <span class="cvc_number">{{c.cvv}}</span>
                                                         </div>
                                                     </div>
                                                     <div class="bottom_card">
@@ -444,51 +451,83 @@
                             </div>
                             <div class="single-item">
                                 <div class="section-text d-flex align-items-center justify-content-between">
-                                    <h6>Notification ({{notifications.count}})</h6>
+                                    <h6>History ({{history.count}})</h6>
                                     <div class="view-all d-flex align-items-center">
                                         <a href="javascript:void(0)">View All</a>
                                         <img src="{% static 'assets1/images/icon/right-arrow.png' %}" alt="icon">
                                     </div>
                                 </div>
                                 <ul class="recipients-item">
-                                    {% for n in notifications %}
-                                        <li>
+                                    {% for h in history|slice:"5" %}
+                                    <li class="{% if h.is_read %}custom-bg-gray{% endif %}" style="padding: 15px; border-radius: 15px;">
                                             
-                                            <a href="javascript:void(0)" class="d-flex">
-                                                <div class="text-area">
+                                            <a href="{% url 'core:history_detail' h.nid %}" class="d-flex ">
+                                                <div class="text-area" style="font-size: 15px;">
+                                                    {% if h.history_type == "Credit Alert"  %}
+                                                        <p class="mdr">You received a payment of <b>₹ {{h.amount}} </b> from <b> {{h.sender.kyc.full_name}} </b></p>
+                                                        <p class="mdr time-area">{{h.date}}</p>
+                                                        <i class="fa fa-arrow-circle-right fa-lg" aria-hidden="true" style="color: green;" ></i>
+                                                    {% endif %}
+                                                    {% if h.history_type == "Debit Alert"  %}
+                                                        <p class="mdr">You sent a payment of <b>₹ {{h.amount}}</b> to <b>{{h.receiver.kyc.full_name}} </b></p>
+                                                        <p class="mdr time-area">{{h.date}}</p>
+                                                        <i class="fa fa-arrow-circle-right fa-lg" aria-hidden="true" style="color: green;" ></i>
+                                                    {% endif %}
+                                                    {% if h.history_type == "Sent Payment Request"  %}
+                                                        <p class="mdr">You sent a <b>payment request</b> of <br> <b>₹ {{h.amount}} </b> to <b> {{h.receiver.kyc.full_name}}</b></p>
+                                                        <p class="mdr time-area">{{h.date}}</p>
+                                                        <i class="fa fa-arrow-circle-right fa-lg" aria-hidden="true" style="color: green;" ></i>
+                                                    {% endif %}
+                                                    {% if h.history_type == "Recieved Payment Request" %}
+                                                        <p class="mdr">You received a <b>payment request</b> of <b>₹{{h.amount}}</b> from <b> {{h.sender.kyc.full_name}}</p>
+                                                        <p class="mdr time-area">{{h.date}}</p>
+                                                        <i class="fa fa-arrow-circle-right fa-lg" aria-hidden="true" style="color: green;" ></i>
+                                                    {% endif %}
+                                                    {% if h.history_type == "Settled Payment Request From"  %}
+                                                        <p class="mdr">You settled a <b>payment(request)</b> of <b>₹ {{h.amount}} </b> to <b> {{h.receiver.kyc.full_name}}</b></p>
+                                                        <p class="mdr time-area">{{h.date}}</p>
+                                                        <i class="fa fa-arrow-circle-right fa-lg" aria-hidden="true" style="color: green;" ></i>
+                                                    {% endif %}
+                                                    {% if h.history_type == "Settled Payment Request To"  %}
+                                                        <p class="mdr"><b>{{h.sender.kyc.full_name}} </b> settled a <b>payment(request) </b> of <b>₹{{h.amount}}</b> to <b>You</b></p>
+                                                        <p class="mdr time-area">{{h.date}}</p>
+                                                        <i class="fa fa-arrow-circle-right fa-lg" aria-hidden="true" style="color: green;" ></i>
+                                                    {% endif %}
+                                                    {% if h.history_type == "Funded Credit Card"  %}
+                                                        <p class="mdr" style="font-size: 14px;">You funded your credit card with <b>₹ {{h.amount}}</b><br> Card Number : <b>{{h.card_number}}</b><br>Card Type : <b>{{h.card_type | upper}}</b><br>Card Tier : <b>{{h.card_tier | upper}}</b></p>
+                                                        <p class="mdr time-area">{{h.date}}</p>
+                                                        <i class="fa fa-arrow-circle-right fa-lg" aria-hidden="true" style="color: green;" ></i>
+                                                    {% endif %}
+                                                    {% if h.history_type == "Withdrew Credit Card Funds"  %}
+                                                        <p class="mdr" style="font-size: 14px;">You withdrew <b>₹ {{h.amount}}</b> from your credit card. <br>Card Number : <b>{{h.card_number}}</b><br>Card Type : <b>{{h.card_type | upper}}</b><br>Card Tier : <b>{{h.card_tier | upper}}</b></p>
+                                                        <p class="mdr time-area">{{h.date}}</p>
+                                                    {% endif %}
+                                                    {% if h.history_type == "Deleted Credit Card"  %}
+                                                        <p class="mdr" style="font-size: 14px;">You deleted your credit card.</p><br>Card Number : <b>{{h.card_number}}</b><br>Card Type : <b>{{h.card_type | upper}}</b><br>Card Tier : <b>{{h.card_tier | upper}}</b> </b>
+                                                        <p class="mdr time-area">{{h.date}}</p>
+                                                        <i class="fa fa-arrow-circle-right fa-lg" aria-hidden="true" style="color: green;" ></i>   
+                                                    {% endif %}
+                                                    {% if h.history_type == "Added Credit Card"  %}
+                                                        <p class="mdr" style="font-size: 14px;">You added a new  credit card.</p><br>Card Number : <b>{{h.card_number}}</b><br>Card Type : <b>{{h.card_type | upper}}</b><br>Card Tier : <b>{{h.card_tier | upper}}</b> </p>
+                                                        <p class="mdr time-area">{{h.date}}</p>
+                                                        <i class="fa fa-arrow-circle-right fa-lg" aria-hidden="true" style="color: green;" ></i>    
+                                                    {% endif %}
+                                                    {% if h.history_type == "De-Activated Credit Card"  %}
+                                                        <p class="mdr" style="font-size: 14px;">You de-activated your credit card.</p><br>Card Number :<b>{{h.card_number}}</b><br>Card Type : <b>{{h.card_type | upper}}</b><br>Card Tier : <b>{{h.card_tier | upper}}</b> </p>
+                                                        <p class="mdr time-area">{{h.date}}</p>
+                                                    {% endif %}
+                                                    {% if h.history_type == "Activated Credit Card" %}
+                                                        <p class="mdr" style="font-size: 14px;">You activated your credit card.</p><br>Card Number :<b>{{h.card_number}}</b><br>Card Type : <b>{{h.card_type | upper}}</b><br>Card Tier : <b>{{h.card_tier | upper}}</b> </p >
+                                                        <p class="mdr time-area">{{h.date}}</p>
+                                                        <i class="fa fa-arrow-circle-right fa-lg" aria-hidden="true" style="color: green;" ></i>
+                                                    {% endif %}
                                                     
-                                                    {% if n.notification_type == "Credit Alert" %}
-                                                    <p class="mdr">You received a payment of <b>₹ {{n.amount}} </b></p>
-                                                    {% endif %}
-                                                    {% if n.notification_type == "Debit Alert" %}
-                                                    <p class="mdr">You sent a payment of <b>₹ {{n.amount}} </b></p>
-                                                    {% endif %}
-                                                    {% if n.notification_type == "Sent Payment Request" %}
-                                                    <p class="mdr">You sent a <b>payment request</b> of <b>₹ {{n.amount}} </b></p>
-                                                    {% endif %}
-                                                    {% if n.notification_type == "Recieved Payment Request" %}
-                                                    <p class="mdr">You received a <b>payment request</b> of <b>₹{{n.amount}} </b></p>
-                                                    {% endif %}
-                                                    {% if n.notification_type == "Funded Credit Card" %}
-                                                    <p class="mdr">You funded your credit card with <b>₹ {{n.amount}}</b></p>
-                                                    {% endif %}
-                                                    {% if n.notification_type == "Withdrew Credit Card Funds" %}
-                                                    <p class="mdr">You withdrew <b>₹ {{n.amount}}</b> from your credit card</p>
-                                                    {% endif %}
-                                                    {% if n.notification_type == "Deleted Credit Card" %}
-                                                    <p class="mdr">You deleted your credit card</p>
-                                                    {% endif %}
-                                                    {% if n.notification_type == "Added Credit Card" %}
-                                                    <p class="mdr">You added a new  credit card</p>
-                                                    {% endif %}
-                                                        
-                                                    <p class="mdr time-area">{{n.date}}</p>
                                                 </div>
                                             </a>
-                                            <i class="fa-solid fa-caret-right"></i>
                                         </li>
                                         {% endfor %}
-                                </ul>
+
+
                             </div>
                         </div>
                     </div>

@@ -1,0 +1,799 @@
+{% extends "partials/dashboard_base.html" %}
+{% load static %}
+{% load humanize   %}
+{% block content %}
+
+{% if notification.notification_type == "Credit Alert" %}
+    <!-- Dashboard Section start -->
+    <section class="dashboard-section body-collapse pay step step-2 step-3 receive-3">
+        <div class="overlay pt-120">
+            <div class="container-fruid">
+                <div class="main-content">
+                    <div class="head-area d-flex align-items-center justify-content-between">
+                        <h4>Amount Credited</h4>
+                        <div class="icon-area">
+                            <!-- <img src="{% static 'assets1/images/icon/support-icon.png' %}" alt="icon"> -->
+                        </div>
+                    </div>
+                    <div class="request-submitted pb-120 text-center">
+                        <div class="top-area">
+                            <div class="icon-area">
+                                <img src="{% static 'assets1/images/icon/submitted-icon.png' %}" alt="icon">
+                            </div>
+                            <h3>Money Received</h3>
+                            <p>Transaction ID :<b> {{transaction.transaction_id}}</b></p>
+                            <p>Payment of <b>₹ {{transaction.amount}} </b> was send from account <b> {{transaction.sender_account.account_number}}(<b>{{notification.sender.kyc.full_name}}</b>)</b></p>
+                            <p>Fee of <b>₹ {{transaction.fee}} </b> was deducted
+                                <hr>
+                            <p>Final Amount of <b>₹ {{transaction.receiving_amount}} </b> is received by you.</p>
+                        </div>
+                        <div class="share-link">
+                            <p>Share direct link with your  payer</p>
+                            <ul class="d-flex align-items-center justify-content-center">
+                                <li>
+                                    <a href="javascript:void(0)"><img src="{% static 'assets1/images/icon/whatsapp.png' %}" alt="icon"></a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)"><img src="{% static 'assets1/images/icon/facebook.png' %}" alt="icon"></a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)"><img src="{% static 'assets1/images/icon/instagram.png' %}" alt="icon"></a>
+                                </li>
+                                <!-- <li>
+                                    <a href="javascript:void(0)"><img src="{% static 'assets1/images/icon/copy-link.png' %}" alt="icon"></a>
+                                </li> -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Dashboard Section end -->
+{% elif notification.notification_type == "Debit Alert" %}
+    <section class="dashboard-section body-collapse pay step step-2 step-3 receive-3">
+        <div class="overlay pt-120">
+            <div class="container-fruid">
+                <div class="main-content">
+                    <div class="head-area d-flex align-items-center justify-content-between">
+                        <h4>Amount Sent</h4>
+                        <div class="icon-area">
+                            <!-- <img src="{% static 'assets1/images/icon/support-icon.png' %}" alt="icon"> -->
+                        </div>
+                    </div>
+                    <div class="request-submitted pb-120 text-center">
+                        <div class="top-area">
+                            <div class="icon-area">
+                                <img src="{% static 'assets1/images/icon/submitted-icon.png' %}" alt="icon">
+                            </div>
+                            <h3>Money Sent</h3>
+                            <p>Transaction ID :<b> {{transaction.transaction_id}}</b></p>
+                            <p>Payment of <b>₹ {{transaction.amount}} </b> was sent to the account <b> {{transaction.sender_account.account_number}}(<b>{{notification.receiver.kyc.full_name}}</b>)</b></p>
+                            <p>Fee of <b>₹ {{transaction.fee}} </b> was deducted
+                                <hr>
+                            <p>Final Amount received by <b>{{notification.receiver.kyc.full_name}}</b> is <b>₹ {{transaction.receiving_amount}} </b></p>
+                        </div>
+                        <div class="share-link">
+                            <p>Share direct link with your  payer</p>
+                            <ul class="d-flex align-items-center justify-content-center">
+                                <li>
+                                    <a href="javascript:void(0)"><img src="{% static 'assets1/images/icon/whatsapp.png' %}" alt="icon"></a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)"><img src="{% static 'assets1/images/icon/facebook.png' %}" alt="icon"></a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)"><img src="{% static 'assets1/images/icon/instagram.png' %}" alt="icon"></a>
+                                </li>
+                                <!-- <li>
+                                    <a href="javascript:void(0)"><img src="{% static 'assets1/images/icon/copy-link.png' %}" alt="icon"></a>
+                                </li> -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% elif notification.notification_type == "Sent Payment Request" %}
+    <section class="dashboard-section body-collapse">
+        <div class="overlay pt-120">
+            <div class="container-fruid">
+                <div class="row">
+                    <div class="col-xl-11 col-lg-11">
+                        <div class="section-content">
+
+                            <div class="transactions-popup">
+                                <div class="container-fruid">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div>
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header justify-content-between">
+                                                            <h5>Payment Request </h5>
+                                                            <a href="{% url 'core:transactions' %}"><i class="material-symbols-outlined fa fa-arrow-left"></i></a>
+                                                        </div>
+                                                        <div class="main-content">
+                                                            <div class="row">
+                                                                <div class="col-sm-5 text-center">
+                                                                    <div class="icon-area">
+                                                                        <h4><b>Requested Payment</b></h4>
+
+                                                                        <!-- <img style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;" src="{{transaction.reciever.kyc.image.url}}" alt="icon"> -->
+                                                                    </div>
+                                                                    <div class="text-area"><br>
+                                                                        <!-- <h5>Sender: <b>{{transaction.sender.kyc.full_name|title}}</b></h5> -->
+                                                                        <!-- <h5 class="mt-2">Reciever: <b>{{transaction.reciever.kyc.full_name|title}} </b></h5><br> -->
+                                                                        <h4><b>₹ {{transaction.amount|intcomma}}</b></h4>
+                                                                        <p>{{transaction.date}}</p>
+                                                                        <!-- <p class="text-warning com ">{{transaction.status|title}}</p> -->
+                                                                        {% if transaction.transaction_status == 'request_settled' %}
+                                                                            <h4 class="text-success"><b>Request Settled</b></h4>
+                                                                        {% endif %}
+                                                                        {% if transaction.transaction_status == 'request_processing' %}
+                                                                            <h4 class="text-warning"><b>Request Processing</b></h4>
+                                                                        {% endif %}
+                                                                        {% if transaction.transaction_status == 'failed' %}
+                                                                            <h4 class="danger"><b>Failed</b></h4>
+                                                                        {% endif %}
+                                                                        {% if transaction.transaction_status == 'request_sent' %}
+                                                                            <h4 class="text-warning"><b>Request Sent</b></h4>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-7">
+                                                                    <div class="right-area">
+                                                                        <h6>Transaction Details</h6>
+                                                                        <ul class="payment-details">
+                                                                            <li>
+                                                                                <span>Total Requested Amount</span>
+                                                                                <span><h6>₹ {{transaction.amount|intcomma}}</h6></span>
+                                                                            </li>
+                                                                            <li>
+                                                                                <span>Fee</span>
+                                                                                <span><h6>₹ {{transaction.fee|intcomma}}    </h6></span>
+                                                                            </li>
+                                                                            <li>
+                                                                                <span>Payment with Fee</span>
+                                                                                <span><h6>₹ {{transaction.payment_with_fee|intcomma}}</h6></span>
+                                                                            </li>                                                                        
+                                                                        </ul>
+                                                                        <ul class="payment-info">
+                                                                            <li>
+                                                                                <p>Request From(Me)</p>
+                                                                                <span class="mdr">{{transaction.sender.kyc.full_name|title}}</span><br>
+                                                                                <span class="mdr">{{transaction.sender.account.account_number|title}}</span>
+                                                                            </li>
+                                                                            <li>
+                                                                                <p>Request To</p>
+                                                                                <span class="mdr">{{transaction.reciever.kyc.full_name|title}}</span><br>
+                                                                                <span class="mdr">{{transaction.reciever.account.account_number|title}}</span>
+                                                                            </li>
+                                                                            <li>
+                                                                                <p>Request Description</p>
+                                                                                <span class="mdr">{{transaction.description}}</span>
+                                                                            </li>
+                                                                            <li>
+                                                                                <p>Request ID:</p>
+                                                                                <span class="mdr">{{transaction.transaction_id}}</span>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% elif notification.notification_type == "Recieved Payment Request" %}
+    <section class="dashboard-section body-collapse">
+        <div class="overlay pt-120">
+            <div class="container-fruid">
+                <div class="row">
+                    <div class="col-xl-11 col-lg-11">
+                        <div class="section-content">
+
+                            <div class="transactions-popup">
+                                <div class="container-fruid">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div>
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header justify-content-between">
+                                                            <h5>Payment Request</h5>
+                                                            <a href="{% url 'core:transactions' %}"><i class="material-symbols-outlined fa fa-arrow-left"></i></a>
+                                                        </div>
+                                                        <div class="main-content">
+                                                            <div class="row">
+                                                                <div class="col-sm-5 text-center">
+                                                                    <div class="icon-area">
+                                                                        <h4><b> Recieved Payment Request</b></h4>
+
+                                                                        <!-- <img style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;" src="{{transaction.reciever.kyc.image.url}}" alt="icon"> -->
+                                                                    </div>
+                                                                    <div class="text-area"><br>
+                                                                        <!-- <h5>Sender: <b>{{transaction.sender.kyc.full_name|title}}</b></h5> -->
+                                                                        <!-- <h5 class="mt-2">Reciever: <b>{{transaction.reciever.kyc.full_name|title}} </b></h5><br> -->
+                                                                        <h4><b>₹ {{transaction.amount|intcomma}}</b></h4>
+                                                                        <p>{{transaction.date}}</p>
+                                                                        <!-- <p class="text-warning com ">{{transaction.status|title}}</p> -->
+                                                                        {% if transaction.transaction_status == 'request_settled' %}
+                                                                            <h4 class="text-success"><b>Request Settled</b></h4>
+                                                                        {% endif %}
+                                                                        {% if transaction.transaction_status == 'request_processing' %}
+                                                                            <h4 class="text-warning"><b>Request Processing</b></h4>
+                                                                        {% endif %}
+                                                                        {% if transaction.transaction_status == 'failed' %}
+                                                                            <h4 class="danger"><b>Failed</b></h4>
+                                                                        {% endif %}
+                                                                        {% if transaction.transaction_status == 'request_sent' %}
+                                                                            <h4 class="text-warning"><b>Request Sent</b></h4>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-7">
+                                                                    <div class="right-area">
+                                                                        <h6>Transaction Details</h6>
+                                                                        <ul class="payment-details">
+                                                                            <li>
+                                                                                <span>Total Requested Amount</span>
+                                                                                <span><h6>₹ {{transaction.amount|intcomma}}</h6></span>
+                                                                            </li>
+                                                                            <li>
+                                                                                <span>Fee</span>
+                                                                                <span><h6>₹ {{transaction.fee|intcomma}}    </h6></span>
+                                                                            </li>
+                                                                            <li>
+                                                                                <span>Payment with Fee</span>
+                                                                                <span><h6>₹ {{transaction.payment_with_fee|intcomma}}</h6></span>
+                                                                            </li>                                                                        
+                                                                        </ul>
+                                                                        <ul class="payment-info">
+                                                                            <li>
+                                                                                <p>Request From</p>
+                                                                                <span class="mdr">{{transaction.sender.kyc.full_name|title}}</span><br>
+                                                                                <span class="mdr">{{transaction.sender.account.account_number|title}}</span>
+                                                                            </li>
+                                                                            <li>
+                                                                                <p>Request To (Me)</p>
+                                                                                <span class="mdr">{{transaction.reciever.kyc.full_name|title}}</span><br>
+                                                                                <span class="mdr">{{transaction.reciever.account.account_number|title}}</span>
+                                                                            </li>
+                                                                            <li>
+                                                                                <p>Request Description</p>
+                                                                                <span class="mdr">{{transaction.description}}</span>
+                                                                            </li>
+                                                                            <li>
+                                                                                <p>Request ID:</p>
+                                                                                <span class="mdr">{{transaction.transaction_id}}</span>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+{% elif notification.notification_type == "Settled Payment Request From" %}
+    <section class="dashboard-section body-collapse">
+        <div class="overlay pt-120">
+            <div class="container-fruid">
+                <div class="row">
+                    <div class="col-xl-11 col-lg-11">
+                        <div class="section-content">
+
+                            <div class="transactions-popup">
+                                <div class="container-fruid">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div>
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header justify-content-between">
+                                                            <h5>Payment Request</h5>
+                                                            <a href="{% url 'core:transactions' %}"><i class="material-symbols-outlined fa fa-arrow-left"></i></a>
+                                                        </div>
+                                                        <div class="main-content">
+                                                            <div class="row">
+                                                                <div class="col-sm-5 text-center">
+                                                                    <div class="icon-area">
+                                                                        <h4><b> Settled Payment Request From</b></h4>
+
+                                                                        <!-- <img style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;" src="{{transaction.reciever.kyc.image.url}}" alt="icon"> -->
+                                                                    </div>
+                                                                    <div class="text-area"><br>
+                                                                        <!-- <h5>Sender: <b>{{transaction.sender.kyc.full_name|title}}</b></h5> -->
+                                                                        <!-- <h5 class="mt-2">Reciever: <b>{{transaction.reciever.kyc.full_name|title}} </b></h5><br> -->
+                                                                        <h4><b>₹ {{transaction.amount|intcomma}}</b></h4>
+                                                                        <p>{{transaction.date}}</p>
+                                                                        <!-- <p class="text-warning com ">{{transaction.status|title}}</p> -->
+                                                                        {% if transaction.transaction_status == 'request_settled' %}
+                                                                            <h4 class="text-success"><b>Request Settled</b></h4>
+                                                                        {% endif %}
+                                                                        {% if transaction.transaction_status == 'request_processing' %}
+                                                                            <h4 class="text-warning"><b>Request Processing</b></h4>
+                                                                        {% endif %}
+                                                                        {% if transaction.transaction_status == 'failed' %}
+                                                                            <h4 class="danger"><b>Failed</b></h4>
+                                                                        {% endif %}
+                                                                        {% if transaction.transaction_status == 'request_sent' %}
+                                                                            <h4 class="text-warning"><b>Request Sent</b></h4>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-7">
+                                                                    <div class="right-area">
+                                                                        <h6>Transaction Details</h6>
+                                                                        <ul class="payment-details">
+                                                                            <li>
+                                                                                <span>Total Requested Amount</span>
+                                                                                <span><h6>₹ {{transaction.amount|intcomma}}</h6></span>
+                                                                            </li>
+                                                                            <li>
+                                                                                <span>Fee</span>
+                                                                                <span><h6>₹ {{transaction.fee|intcomma}}    </h6></span>
+                                                                            </li>
+                                                                            <li>
+                                                                                <span>Payment with Fee</span>
+                                                                                <span><h6>₹ {{transaction.payment_with_fee|intcomma}}</h6></span>
+                                                                            </li>                                                                        
+                                                                        </ul>
+                                                                        <ul class="payment-info">
+                                                                            <li>
+                                                                                <p>Request From</p>
+                                                                                <span class="mdr">{{transaction.sender.kyc.full_name|title}}</span><br>
+                                                                                <span class="mdr">{{transaction.sender.account.account_number|title}}</span>
+                                                                            </li>
+                                                                            <li>
+                                                                                <p>Request To (Me)</p>
+                                                                                <span class="mdr">{{transaction.reciever.kyc.full_name|title}}</span><br>
+                                                                                <span class="mdr">{{transaction.reciever.account.account_number|title}}</span>
+                                                                            </li>
+                                                                            <li>
+                                                                                <p>Request Description</p>
+                                                                                <span class="mdr">{{transaction.description}}</span>
+                                                                            </li>
+                                                                            <li>
+                                                                                <p>Request ID:</p>
+                                                                                <span class="mdr">{{transaction.transaction_id}}</span>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+{% elif notification.notification_type == "Settled Payment Request To" %}
+    <section class="dashboard-section body-collapse">
+        <div class="overlay pt-120">
+            <div class="container-fruid">
+                <div class="row">
+                    <div class="col-xl-11 col-lg-11">
+                        <div class="section-content">
+
+                            <div class="transactions-popup">
+                                <div class="container-fruid">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div>
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header justify-content-between">
+                                                            <h5>Payment Request</h5>
+                                                            <a href="{% url 'core:transactions' %}"><i class="material-symbols-outlined fa fa-arrow-left"></i></a>
+                                                        </div>
+                                                        <div class="main-content">
+                                                            <div class="row">
+                                                                <div class="col-sm-5 text-center">
+                                                                    <div class="icon-area">
+                                                                        <h4><b> Settled Payment Request To</b></h4>
+
+                                                                        <!-- <img style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;" src="{{transaction.reciever.kyc.image.url}}" alt="icon"> -->
+                                                                    </div>
+                                                                    <div class="text-area"><br>
+                                                                        <!-- <h5>Sender: <b>{{transaction.sender.kyc.full_name|title}}</b></h5> -->
+                                                                        <!-- <h5 class="mt-2">Reciever: <b>{{transaction.reciever.kyc.full_name|title}} </b></h5><br> -->
+                                                                        <h4><b>₹ {{transaction.payment_with_fee|intcomma}}</b></h4>
+                                                                        <p>{{transaction.date}}</p>
+                                                                        <!-- <p class="text-warning com ">{{transaction.status|title}}</p> -->
+                                                                        {% if transaction.transaction_status == 'request_settled' %}
+                                                                            <h4 class="text-success"><b>Request Settled</b></h4>
+                                                                        {% endif %}
+                                                                        {% if transaction.transaction_status == 'request_processing' %}
+                                                                            <h4 class="text-warning"><b>Request Processing</b></h4>
+                                                                        {% endif %}
+                                                                        {% if transaction.transaction_status == 'failed' %}
+                                                                            <h4 class="danger"><b>Failed</b></h4>
+                                                                        {% endif %}
+                                                                        {% if transaction.transaction_status == 'request_sent' %}
+                                                                            <h4 class="text-warning"><b>Request Sent</b></h4>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-sm-7">
+                                                                    <div class="right-area">
+                                                                        <h6>Transaction Details</h6>
+                                                                        <ul class="payment-details">
+                                                                            <li>
+                                                                                <span>Total Requested Amount</span>
+                                                                                <span><h6>₹ {{transaction.amount|intcomma}}</h6></span>
+                                                                            </li>
+                                                                            <li>
+                                                                                <span>Fee</span>
+                                                                                <span><h6>₹ {{transaction.fee|intcomma}}    </h6></span>
+                                                                            </li>
+                                                                            <li>
+                                                                                <span>Payment with Fee</span>
+                                                                                <span><h6>₹ {{transaction.payment_with_fee|intcomma}}</h6></span>
+                                                                            </li>                                                                        
+                                                                        </ul>
+                                                                        <ul class="payment-info">
+                                                                            <li>
+                                                                                <p>Request From</p>
+                                                                                <span class="mdr">{{transaction.sender.kyc.full_name|title}}</span><br>
+                                                                                <span class="mdr">{{transaction.sender.account.account_number|title}}</span>
+                                                                            </li>
+                                                                            <li>
+                                                                                <p>Request To (Me)</p>
+                                                                                <span class="mdr">{{transaction.reciever.kyc.full_name|title}}</span><br>
+                                                                                <span class="mdr">{{transaction.reciever.account.account_number|title}}</span>
+                                                                            </li>
+                                                                            <li>
+                                                                                <p>Request Description</p>
+                                                                                <span class="mdr">{{transaction.description}}</span>
+                                                                            </li>
+                                                                            <li>
+                                                                                <p>Request ID:</p>
+                                                                                <span class="mdr">{{transaction.transaction_id}}</span>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% elif notification.notification_type == "Funded Credit Card" %}
+    <section class="dashboard-section body-collapse">
+        <div class="overlay pt-120">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-11 col-lg-11">
+                        <div class="section-content">
+                            <div class="transactions-popup">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header justify-content-between">
+                                                        <h5>Funded Credit Card From Account</h5>
+                                                        <a href="{% url 'core:transactions' %}">
+                                                            <i class="material-symbols-outlined fa fa-arrow-left"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="right-area">
+                                                        <h6>Transaction Details</h6>
+                                                        <ul class="payment-details">
+                                                            <li>
+                                                                <span>Fund Amount</span>
+                                                                <span><h6>₹ {{notification.amount|intcomma}}</h6></span>
+                                                            </li>
+                                                            <li>
+                                                                <span>Fee</span>
+                                                                <span><h6>₹ 0.00</h6></span>
+                                                            </li>
+                                                            <li>
+                                                                <span>Total Funded Amount</span>
+                                                                <span><h6>₹ {{notification.amount|intcomma}}</h6></span>
+                                                            </li>                                                                        
+                                                        </ul>
+                                                        <ul class="payment-info">
+                                                            <li>
+                                                                <p>From (Main Account)</p>
+                                                                <span class="mdr">{{notification.user.kyc.full_name|title}}</span><br>
+                                                                <span class="mdr">{{notification.user.account.account_number|title}}</span><br>
+                                                            </li>
+                                                            <li>
+                                                                <p>Funded Card Details</p>
+                                                                <span class="mdr">{{notification.card_number|title}}</span><br>
+                                                                <span class="mdr">{{notification.card_type|title}}</span><br>
+                                                                <span class="mdr">{{notification.card_tier|title}}</span><br>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% elif notification.notification_type == "Withdrew Credit Card Funds" %}
+    <section class="dashboard-section body-collapse">
+        <div class="overlay pt-120">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-11 col-lg-11">
+                        <div class="section-content">
+                            <div class="transactions-popup">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header justify-content-between">
+                                                        <h5>Withdrew From Credit Card To Account</h5>
+                                                        <a href="{% url 'core:transactions' %}">
+                                                            <i class="material-symbols-outlined fa fa-arrow-left"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="right-area">
+                                                        <h6>Transaction Details</h6>
+                                                        <ul class="payment-details">
+                                                            <li>
+                                                                <span>Withdraw Amount</span>
+                                                                <span><h6>₹ {{notification.amount|intcomma}}</h6></span>
+                                                            </li>
+                                                            <li>
+                                                                <span>Fee</span>
+                                                                <span><h6>₹ 0.00</h6></span>
+                                                            </li>
+                                                            <li>
+                                                                <span>Total Withdraw Amount</span>
+                                                                <span><h6>₹ {{notification.amount|intcomma}}</h6></span>
+                                                            </li>                                                                        
+                                                        </ul>
+                                                        <ul class="payment-info">
+                                                            <li>
+                                                                <p>Withdraw Card Details</p>
+                                                                <span class="mdr">{{notification.card_number|title}}</span><br>
+                                                                <span class="mdr">{{notification.card_type|title}}</span><br>
+                                                                <span class="mdr">{{notification.card_tier|title}}</span><br>
+                                                            </li>
+                                                            <li>
+                                                                <p>To (Main Account)</p>
+                                                                <span class="mdr">{{notification.user.kyc.full_name|title}}</span><br>
+                                                                <span class="mdr">{{notification.user.account.account_number|title}}</span><br>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% elif notification.notification_type == "Deleted Credit Card" %}
+    <section class="dashboard-section body-collapse">
+        <div class="overlay pt-120">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-11 col-lg-11">
+                        <div class="section-content">
+                            <div class="transactions-popup">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header justify-content-between">
+                                                        <h5>Credit Card Deleted</h5>
+                                                        <a href="{% url 'core:transactions' %}">
+                                                            <i class="material-symbols-outlined fa fa-arrow-left"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="right-area">
+                                                        <h6>Card Details</h6>               
+                                                        <ul class="payment-info">
+                                                            <li>
+                                                                <p>Deleted Card Details</p>
+                                                                <span class="mdr">{{notification.card_number|title}}</span><br>
+                                                                <span class="mdr">{{notification.card_type|title}}</span><br>
+                                                                <span class="mdr">{{notification.card_tier|title}}</span><br>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% elif notification.notification_type == "Added Credit Card" %}
+    <section class="dashboard-section body-collapse">
+        <div class="overlay pt-120">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-11 col-lg-11">
+                        <div class="section-content">
+                            <div class="transactions-popup">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header justify-content-between">
+                                                        <h5>Credit Card Added</h5>
+                                                        <a href="{% url 'core:transactions' %}">
+                                                            <i class="material-symbols-outlined fa fa-arrow-left"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="right-area">
+                                                        <h6>Card Details</h6>               
+                                                        <ul class="payment-info">
+                                                            <li>
+                                                                <p>Added Card Details</p>
+                                                                <span class="mdr">{{notification.card_number|title}}</span><br>
+                                                                <span class="mdr">{{notification.card_type|title}}</span><br>
+                                                                <span class="mdr">{{notification.card_tier|title}}</span><br>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% elif notification.notification_type == "De-Activated Credit Card" %}
+    <section class="dashboard-section body-collapse">
+        <div class="overlay pt-120">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-11 col-lg-11">
+                        <div class="section-content">
+                            <div class="transactions-popup">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header justify-content-between">
+                                                        <h5>Credit Card De-Activated</h5>
+                                                        <a href="{% url 'core:transactions' %}">
+                                                            <i class="material-symbols-outlined fa fa-arrow-left"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="right-area">
+                                                        <h6>Card Details</h6>               
+                                                        <ul class="payment-info">
+                                                            <li>
+                                                                <p>Card Details</p>
+                                                                <span class="mdr">{{notification.card_number|title}}</span><br>
+                                                                <span class="mdr">{{notification.card_type|title}}</span><br>
+                                                                <span class="mdr">{{notification.card_tier|title}}</span><br>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% elif notification.notification_type == "Activated Credit Card" %}
+    <section class="dashboard-section body-collapse">
+        <div class="overlay pt-120">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-11 col-lg-11">
+                        <div class="section-content">
+                            <div class="transactions-popup">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header justify-content-between">
+                                                        <h5>Credit Card Activated</h5>
+                                                        <a href="{% url 'core:transactions' %}">
+                                                            <i class="material-symbols-outlined fa fa-arrow-left"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="right-area">
+                                                        <h6>Card Details</h6>               
+                                                        <ul class="payment-info">
+                                                            <li>
+                                                                <p>Card Details</p>
+                                                                <span class="mdr">{{notification.card_number|title}}</span><br>
+                                                                <span class="mdr">{{notification.card_type|title}}</span><br>
+                                                                <span class="mdr">{{notification.card_tier|title}}</span><br>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endif %}
+{% endblock content %}

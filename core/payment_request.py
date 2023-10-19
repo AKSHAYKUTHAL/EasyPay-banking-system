@@ -3,7 +3,7 @@ from account.models import Account
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib import messages
-from core.models import Transaction
+from core.models import Transaction,Notification,History
 import time
 from decimal import Decimal
 
@@ -106,6 +106,45 @@ def amount_request_final_process(request, account_number,transaction_id):
             transaction.transaction_status = 'request_sent'
             transaction.save()
 
+            Notification.objects.create(
+                user=account.user,
+                notification_type="Recieved Payment Request",
+                amount=transaction.amount,
+                sender = request.user,
+                receiver = account.user,
+                transaction_id = transaction.transaction_id
+                
+            )
+            History.objects.create(
+                user=account.user,
+                history_type="Recieved Payment Request",
+                amount=transaction.amount,
+                sender = request.user,
+                receiver = account.user,
+                transaction_id = transaction.transaction_id
+                
+            )
+            
+            
+            Notification.objects.create(
+                user=request.user,
+                amount=transaction.amount,
+                notification_type="Sent Payment Request",
+                sender = request.user,
+                receiver = account.user,
+                transaction_id = transaction.transaction_id
+
+            )
+            History.objects.create(
+                user=request.user,
+                amount=transaction.amount,
+                history_type="Sent Payment Request",
+                sender = request.user,
+                receiver = account.user,
+                transaction_id = transaction.transaction_id
+
+            )
+
             messages.success(request,'Your payment request have been sent successfully. ')
             time.sleep(1)
             return redirect('core:amount_request_completed',account.account_number,transaction.transaction_id)
@@ -193,6 +232,41 @@ def request_settlement_processing(request,account_number,transaction_id):
 
                 transaction.transaction_status = 'request_settled'
                 transaction.save()
+
+                Notification.objects.create(
+                user=account.user,
+                notification_type="Settled Payment Request To",
+                amount=transaction.amount,
+                sender = request.user,
+                receiver = account.user,
+                transaction_id = transaction.transaction_id
+                )
+                History.objects.create(
+                user=account.user,
+                history_type="Settled Payment Request To",
+                amount=transaction.amount,
+                sender = request.user,
+                receiver = account.user,
+                transaction_id = transaction.transaction_id
+                )
+            
+                Notification.objects.create(
+                    user=request.user,
+                    amount=transaction.amount,
+                    notification_type="Settled Payment Request From",
+                    sender = request.user,
+                    receiver = account.user,
+                    transaction_id = transaction.transaction_id
+                )
+                History.objects.create(
+                    user=request.user,
+                    amount=transaction.amount,
+                    history_type="Settled Payment Request From",
+                    sender = request.user,
+                    receiver = account.user,
+                    transaction_id = transaction.transaction_id
+                )
+                
                 messages.success(request,f"Settled to {account.user.kyc.full_name} was successful.")
                 time.sleep(1)
                 return redirect('core:request_settlement_completed',account.account_number,transaction.transaction_id)

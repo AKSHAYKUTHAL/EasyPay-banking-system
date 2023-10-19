@@ -8,6 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Paylio - Money Transfer and Online Payments Dashboard HTML Template</title>
+    <!-- ... (your existing code) ... -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- ... (your existing code) ... -->
 
     <link rel="shortcut icon" href="{% static 'assets1/images/fav.png' %}" type="image/x-icon">
     <link rel="stylesheet" href="{% static 'assets1/css/bootstrap.min.css' %}">
@@ -18,7 +21,14 @@
     <link rel="stylesheet" href="{% static 'assets1/css/arafat-font.css' %}">
     <link rel="stylesheet" href="{% static 'assets1/css/plugin/animate.css' %}">
     <link rel="stylesheet" href="{% static 'assets1/css/style.css' %}">
+    
+    <style>
+        .custom-bg-gray {
+          background-color: rgb(211, 213, 222);
+        }
+      </style>
 </head>
+
 
 <body>
     <!-- start preloader -->
@@ -68,88 +78,83 @@
                                         <h5>Notifications</h5>
                                         <span class="mdr">{{ notifications.count }}</span>
                                     </div>
+                                    <a class="font-weight-light" href="">Go to History</a>
+                                    <div class="notifications-list" id="notifications-list">
                                     <ul>
                                         {% for n in notifications %}
                                         <li>
                                             
-                                            <a href="javascript:void(0)" class="d-flex">
-                                                <div class="text-area">
+                                            <a href="{% url 'core:notification_detail' n.nid %}" class="d-flex">
+                                                <div class="text-area" style="font-size: 15px;">
+                                                    {% if n.notification_type == "Credit Alert" and n.is_read == False %}
+                                                        <p class="mdr">You received a payment of <b>₹ {{n.amount}} </b> from <b> {{n.sender.kyc.full_name}} </b></p>
+                                                        <p class="mdr time-area">{{n.date}}</p>
+                                                        <i class="fa fa-arrow-circle-right fa-lg" aria-hidden="true" style="color: green;" ></i>
+                                                    {% endif %}
+                                                    {% if n.notification_type == "Debit Alert" and n.is_read == False %}
+                                                        <p class="mdr">You sent a payment of <b>₹ {{n.amount}}</b> to <b>{{n.receiver.kyc.full_name}} </b></p>
+                                                        <p class="mdr time-area">{{n.date}}</p>
+                                                        <i class="fa fa-arrow-circle-right fa-lg" aria-hidden="true" style="color: green;" ></i>
+                                                    {% endif %}
+                                                    {% if n.notification_type == "Sent Payment Request" and n.is_read == False %}
+                                                        <p class="mdr">You sent a <b>payment request</b> of <br> <b>₹ {{n.amount}} </b> to <b> {{n.receiver.kyc.full_name}}</b></p>
+                                                        <p class="mdr time-area">{{n.date}}</p>
+                                                        <i class="fa fa-arrow-circle-right fa-lg" aria-hidden="true" style="color: green;" ></i>
+                                                    {% endif %}
+                                                    {% if n.notification_type == "Recieved Payment Request" and n.is_read == False %}
+                                                        <p class="mdr">You received a <b>payment request</b> of <b>₹{{n.amount}}</b> from <b> {{n.sender.kyc.full_name}}</p>
+                                                        <p class="mdr time-area">{{n.date}}</p>
+                                                        <i class="fa fa-arrow-circle-right fa-lg" aria-hidden="true" style="color: green;" ></i>
+                                                    {% endif %}
+                                                    {% if n.notification_type == "Settled Payment Request From" and n.is_read == False %}
+                                                        <p class="mdr">You settled a <b>payment(request)</b> of <b>₹ {{n.amount}} </b> to <b> {{n.receiver.kyc.full_name}}</b></p>
+                                                        <p class="mdr time-area">{{n.date}}</p>
+                                                        <i class="fa fa-arrow-circle-right fa-lg" aria-hidden="true" style="color: green;" ></i>
+                                                    {% endif %}
+                                                    {% if n.notification_type == "Settled Payment Request To" and n.is_read == False %}
+                                                        <p class="mdr"><b>{{n.sender.kyc.full_name}} </b> settled a <b>payment(request) </b> of <b>₹{{n.amount}}</b> to <b>You</b></p>
+                                                        <p class="mdr time-area">{{n.date}}</p>
+                                                        <i class="fa fa-arrow-circle-right fa-lg" aria-hidden="true" style="color: green;" ></i>
+                                                    {% endif %}
+                                                    {% if n.notification_type == "Funded Credit Card" and n.is_read == False %}
+                                                        <p class="mdr" style="font-size: 14px;">You funded your credit card with <b>₹ {{n.amount}}</b><br> Card Number : <b>{{n.card_number}}</b><br>Card Type : <b>{{n.card_type | upper}}</b><br>Card Tier : <b>{{n.card_tier | upper}}</b></p>
+                                                        <p class="mdr time-area">{{n.date}}</p>
+                                                        <i class="fa fa-arrow-circle-right fa-lg" aria-hidden="true" style="color: green;" ></i>
+                                                    {% endif %}
+                                                    {% if n.notification_type == "Withdrew Credit Card Funds" and n.is_read == False %}
+                                                        <p class="mdr" style="font-size: 14px;">You withdrew <b>₹ {{n.amount}}</b> from your credit card. <br>Card Number : <b>{{n.card_number}}</b><br>Card Type : <b>{{n.card_type | upper}}</b><br>Card Tier : <b>{{n.card_tier | upper}}</b></p>
+                                                        <p class="mdr time-area">{{n.date}}</p>
+                                                    {% endif %}
+                                                    {% if n.notification_type == "Deleted Credit Card" and n.is_read == False %}
+                                                        <p class="mdr" style="font-size: 14px;">You deleted your credit card.</p><br>Card Number : <b>{{n.card_number}}</b><br>Card Type : <b>{{n.card_type | upper}}</b><br>Card Tier : <b>{{n.card_tier | upper}}</b> </b>
+                                                        <p class="mdr time-area">{{n.date}}</p>
+                                                        <i class="fa fa-arrow-circle-right fa-lg" aria-hidden="true" style="color: green;" ></i>   
+                                                    {% endif %}
+                                                    {% if n.notification_type == "Added Credit Card" and n.is_read == False %}
+                                                        <p class="mdr" style="font-size: 14px;">You added a new  credit card.</p><br>Card Number : <b>{{n.card_number}}</b><br>Card Type : <b>{{n.card_type | upper}}</b><br>Card Tier : <b>{{n.card_tier | upper}}</b> </p>
+                                                        <p class="mdr time-area">{{n.date}}</p>
+                                                        <i class="fa fa-arrow-circle-right fa-lg" aria-hidden="true" style="color: green;" ></i>    
+                                                    {% endif %}
+                                                    {% if n.notification_type == "De-Activated Credit Card" and n.is_read == False %}
+                                                        <p class="mdr" style="font-size: 14px;">You de-activated your credit card.</p><br>Card Number :<b>{{n.card_number}}</b><br>Card Type : <b>{{n.card_type | upper}}</b><br>Card Tier : <b>{{n.card_tier | upper}}</b> </p>
+                                                        <p class="mdr time-area">{{n.date}}</p>
+                                                    {% endif %}
+                                                    {% if n.notification_type == "Activated Credit Card" and n.is_read == False %}
+                                                        <p class="mdr" style="font-size: 14px;">You activated your credit card.</p><br>Card Number :<b>{{n.card_number}}</b><br>Card Type : <b>{{n.card_type | upper}}</b><br>Card Tier : <b>{{n.card_tier | upper}}</b> </p >
+                                                        <p class="mdr time-area">{{n.date}}</p>
+                                                        <i class="fa fa-arrow-circle-right fa-lg" aria-hidden="true" style="color: green;" ></i>
+                                                    {% endif %}
                                                     
-                                                    {% if n.notification_type == "Credit Alert" %}
-                                                    <p class="mdr">You received a payment of <b>${{n.amount}}</b></p>
-                                                    {% endif %}
-                                                    {% if n.notification_type == "Debit Alert" %}
-                                                    <p class="mdr">You sent a payment of <b>${{n.amount}}</b></p>
-                                                    {% endif %}
-                                                    {% if n.notification_type == "Sent Payment Request" %}
-                                                    <p class="mdr">You sent a <b>payment request</b> of <b>${{n.amount}}</b></p>
-                                                    {% endif %}
-                                                    {% if n.notification_type == "Recieved Payment Request" %}
-                                                    <p class="mdr">You received a <b>payment request</b> of <b>${{n.amount}}</b></p>
-                                                    {% endif %}
-                                                    {% if n.notification_type == "Funded Credit Card" %}
-                                                    <p class="mdr">You funded your credit card with <b>${{n.amount}}</b></p>
-                                                    {% endif %}
-                                                    {% if n.notification_type == "Withdrew Credit Card Funds" %}
-                                                    <p class="mdr">You withdrew <b>${{n.amount}}</b> from your credit card</p>
-                                                    {% endif %}
-                                                    {% if n.notification_type == "Deleted Credit Card" %}
-                                                    <p class="mdr">You deleted your credit card</p>
-                                                    {% endif %}
-                                                    {% if n.notification_type == "Added Credit Card" %}
-                                                    <p class="mdr">You added a new  credit card</p>
-                                                    {% endif %}
-                                                        
-                                                    <p class="mdr time-area">{{n.date}}</p>
                                                 </div>
                                             </a>
-                                            <i class="fa-solid fa-caret-right"></i>
                                         </li>
                                         {% endfor %}
-
-                                        <!-- <li>
-                                            <a href="javascript:void(0)" class="d-flex">
-                                                <div class="img-area">
-                                                    <img src="{% static 'assets1/images/user-2.png' %}" class="max-un" alt="image">
-                                                </div>
-                                                <div class="text-area">
-                                                    <p class="mdr"><b>James Deed</b> requested a payment of
-                                                        <b>£890.00</b>
-                                                    </p>
-                                                    <p class="mdr time-area">08.09AM</p>
-                                                </div>
-                                            </a>
-                                            <i class="fa-solid fa-caret-right"></i>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)" class="d-flex">
-                                                <div class="img-area">
-                                                    <img src="{% static 'assets1/images/master-card.png' %}" class="max-un" alt="image">
-                                                </div>
-                                                <div class="text-area">
-                                                    <p class="mdr">Your new payment method has beed added successfully
-                                                    </p>
-                                                    <p class="mdr time-area">09.39AM</p>
-                                                </div>
-                                            </a>
-                                            <i class="fa-solid fa-caret-right"></i>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)" class="d-flex">
-                                                <div class="img-area">
-                                                    <img src="{% static 'assets1/images/user-3.png' %}" class="max-un" alt="image">
-                                                </div>
-                                                <div class="text-area">
-                                                    <p class="mdr">You received a payment of <b>$250.00</b> from Goerge
-                                                        Michael</p>
-                                                    <p class="mdr time-area">Yesterday</p>
-                                                </div>
-                                            </a>
-                                            <i class="fa-solid fa-caret-right"></i>
-                                        </li> -->
                                     </ul>
+                                    </div>
                                 </div>
                             </div>
+                            
+                            
                             <div class="single-item user-area">
                                 <div class="profile-area d-flex align-items-center">
                                     <span class="user-profile">
@@ -208,7 +213,7 @@
                             <i class="fa-solid fa-xmark"></i>
                         </div>
                         <div class="sidebar-logo">
-                            <a href=""><img src="{% static 'assets1/images/logo.png' %}" alt="logo"></a>
+                            <a href=""><img src="{% static 'assets1/images/easypay_logo.png' %}" alt="logo"></a>
                         </div>
                         <ul>
                             <li>
@@ -228,7 +233,7 @@
                             </li>
                             <li>
                                 <a href="{% url 'core:request_payment_search_account' %}">
-                                    <img src="{% static 'assets1/images/icon/receive.png' %}" alt="Receive"> <span>Receive</span>
+                                    <img src="{% static 'assets1/images/icon/receive.png' %}" alt="Receive"> <span>Request</span>
                                 </a>
                             </li>
                             <li>

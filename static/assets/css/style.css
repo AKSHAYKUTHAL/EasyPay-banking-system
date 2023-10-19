@@ -3805,7 +3805,7 @@ label {
 
         .Front_card {
         width: 100%;
-        height: 100%;
+        height: 210px;
         outline: none;
         border: none;
         background: linear-gradient(248.61deg, #01c2ff 0.03%, #2d0067 99.03%);
@@ -3841,6 +3841,7 @@ label {
             transform: perspective(1000px) rotateY(0deg);
             transition: transform 0.4s ease-out;
         }
+
 
         .top_card {
         display: flex;
@@ -3947,7 +3948,7 @@ label {
         outline: none;
         border: none;
         width: 100%;
-        height: 100%;
+        height: 210px;
         background: linear-gradient(248.61deg, #01c2ff 0.03%, #2d0067 99.03%);
         box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
         border-radius: 10px;
@@ -3960,7 +3961,7 @@ label {
         display: flex;
         position: relative;
         width: 100%;
-        height: 200px;
+        height: 210px;
         }
 
         .card__main .back_card .top_card .black_strip {
@@ -4063,3 +4064,5 @@ label {
             padding-top: 10%;
             
         }
+
+        

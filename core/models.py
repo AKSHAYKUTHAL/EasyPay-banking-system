@@ -51,13 +51,35 @@ NOTIFICATION_TYPE = (
     ("Debit Alert", "Debit Alert"),
     ("Sent Payment Request", "Sent Payment Request"),
     ("Recieved Payment Request", "Recieved Payment Request"),
+    ("Settled Payment Request To", "Settled Payment Request To"),
+    ("Settled Payment Request From", "Settled Payment Request From"),
     ("Funded Credit Card", "Funded Credit Card"),
     ("Withdrew Credit Card Funds", "Withdrew Credit Card Funds"),
     ("Deleted Credit Card", "Deleted Credit Card"),
     ("Added Credit Card", "Added Credit Card"),
+    ("Activated Credit Card", "Activated Credit Card"),
+    ("De-Activated Credit Card", "De-Activated Credit Card"),
 
 )
+HISTORY_TYPE = (
+    ("None", "None"),
+    ("Transfer", "Transfer"),
+    ("Credit Alert", "Credit Alert"),
+    ("Debit Alert", "Debit Alert"),
+    ("Sent Payment Request", "Sent Payment Request"),
+    ("Recieved Payment Request", "Recieved Payment Request"),
+    ("Settled Payment Request To", "Settled Payment Request To"),
+    ("Settled Payment Request From", "Settled Payment Request From"),
+    ("Funded Credit Card", "Funded Credit Card"),
+    ("Withdrew Credit Card Funds", "Withdrew Credit Card Funds"),
+    ("Deleted Credit Card", "Deleted Credit Card"),
+    ("Added Credit Card", "Added Credit Card"),
+    ("Activated Credit Card", "Activated Credit Card"),
+    ("De-Activated Credit Card", "De-Activated Credit Card"),
 
+
+
+)
 
 
 class Transaction(models.Model):
@@ -104,7 +126,7 @@ class Transaction(models.Model):
 
 class CreditCard(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    card_id = ShortUUIDField(unique=True, length=5, max_length=20, prefix="CARD", alphabet="1234567890")
+    credit_card_id = ShortUUIDField(unique=True, length=5, max_length=20, prefix="CARD", alphabet="1234567890")
     card_pin_number = ShortUUIDField(length=4, max_length=4, alphabet="1234567890")
 
 
@@ -134,3 +156,48 @@ class CreditCard(models.Model):
         return f"{self.user}"
     
 
+
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    notification_type = models.CharField(max_length=100, choices=NOTIFICATION_TYPE, default="none")
+    amount = models.IntegerField(default=0)
+    is_read = models.BooleanField(default=False)
+    date = models.DateTimeField(auto_now_add=True)
+    nid = ShortUUIDField(length=10, max_length=25, alphabet="abcdefghijklmnopqrstuvxyz")
+    receiver = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,related_name='reciever_details')
+    sender = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,related_name='sender_details')
+    card_number = models.CharField(max_length=100,null=True,blank=True)
+    card_type = models.CharField(max_length=50,blank=True,null=True)
+    card_tier = models.CharField(max_length=50,blank=True,null=True)
+    transaction_id = models.CharField(max_length=100,blank=True,null=True)
+
+
+    class Meta:
+        ordering = ["-date"]
+        verbose_name_plural = "Notification"
+
+    def __str__(self):
+        return f"{self.user} - {self.notification_type}"
+    
+
+class History(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    history_type = models.CharField(max_length=100, choices=HISTORY_TYPE, default="none")
+    amount = models.IntegerField(default=0)
+    is_read = models.BooleanField(default=False)
+    date = models.DateTimeField(auto_now_add=True)
+    nid = ShortUUIDField(length=10, max_length=25, alphabet="abcdefghijklmnopqrstuvxyz")
+    receiver = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,related_name='reciever_details_history')
+    sender = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,related_name='sender_details_history')
+    card_number = models.CharField(max_length=100,null=True,blank=True)
+    card_type = models.CharField(max_length=50,blank=True,null=True)
+    card_tier = models.CharField(max_length=50,blank=True,null=True)
+    transaction_id = models.CharField(max_length=100,blank=True,null=True)
+
+
+    class Meta:
+        ordering = ["-date"]
+        verbose_name_plural = "History"
+
+    def __str__(self):
+        return f"{self.user} - {self.history_type}"
