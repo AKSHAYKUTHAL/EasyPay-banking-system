@@ -64,3 +64,41 @@ def history_detail(request,nid):
     }
     
     return render(request,'notificaton_and_history/history_detail.html',context)
+
+
+def all_history(request):
+    all_history = History.objects.filter(user=request.user)
+    transactions = [] 
+    credit_cards = []
+
+    
+
+    for history in all_history:
+        try:
+            credit_cards += list(CreditCard.objects.filter(number=history.card_number))
+        except CreditCard.DoesNotExist:
+            credit_cards = None
+
+    for history in all_history:
+        try:
+            transactions += list(Transaction.objects.filter(transaction_id=history.transaction_id))
+        except Transaction.DoesNotExist:
+            transactions = None
+    
+    # for transaction in transactions:
+    #     if transaction:
+    #         print(f"transaction_status = {transaction.transaction_status}")
+
+    # for h in all_history:
+    #     if h.amount:
+    #         for t in transactions:
+    #             print(f"status = {t.transaction_status}")
+
+
+
+    context = {
+        'all_history':all_history,
+        'transactions':transactions,
+        'credit_cards':credit_cards
+    }
+    return render(request,'notificaton_and_history/all_history.html',context)

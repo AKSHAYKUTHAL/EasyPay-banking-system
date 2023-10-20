@@ -22,7 +22,7 @@
                                                     <div class="modal-content">
                                                         <div class="modal-header justify-content-between">
                                                             <h5>Credit Card</h5>
-                                                            <a href="{% url 'account:dashboard' %}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+                                                            <a href="#" onclick="location.href = document.referrer; return false;"><i class="fa fa-arrow-left fa-2x" aria-hidden="true"></i></a>
                                                         </div>
                                                         <div class="main-content">
                                                             <div class="row">
@@ -50,7 +50,7 @@
                                                                                             <div class="card_holder_name" style="text-align: left;">{{credit_card.name}}</div>
                                                                                         </div>
                                                                                         <div class="card_info">
-                                                                                        <div class="card_holder_info" style="margin-top: 40px;">
+                                                                                        <div class="card_holder_info" style="margin-top: 60px;">
                                                                                             <span class="expire_month" >{{credit_card.month}}</span>
                                                                                             <span class="slash">/</span>
                                                                                             <span class="expire_year">{{credit_card.year_in_two_digits}}</span>

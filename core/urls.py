@@ -16,6 +16,7 @@ urlpatterns = [
     path('transfer_completed/<account_number>/<transaction_id>/',transfer.transfer_completed,name='transfer_completed'),
     
     # Transactions
+    path('all_transactions/',transaction.all_transactions,name='all_transactions'),
     path('transactions/',transaction.transaction_list,name='transactions'),
     path('transaction_detail_sent/<transaction_id>/',transaction.transaction_detail_sent,name='transaction_detail_sent'),
     path('transaction_detail_received/<transaction_id>/',transaction.transaction_detail_received,name='transaction_detail_received'),
@@ -40,7 +41,7 @@ urlpatterns = [
 
 
     # credit card
-
+    path('all_credit_cards',credit_card.all_credit_cards,name='all_credit_cards'),
     path('credit_card_detail/<credit_card_id>/',credit_card.credit_card_detail,name='credit_card_detail'),
     path('fund_credit_card/<credit_card_id>/',credit_card.fund_credit_card,name='fund_credit_card'),
     path('withdraw_fund_from_credit_card/<credit_card_id>/',credit_card.withdraw_fund_from_credit_card,name='withdraw_fund_from_credit_card'),
@@ -52,6 +53,7 @@ urlpatterns = [
 
     path('notification_detail/<nid>/',notificaton_and_history.notification_detail,name='notification_detail'),
     path('history_detail/<nid>/',notificaton_and_history.history_detail,name='history_detail'),
+    path('all_history',notificaton_and_history.all_history,name='all_history')
 
 
 ]

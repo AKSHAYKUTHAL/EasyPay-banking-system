@@ -102,10 +102,10 @@ class Transaction(models.Model):
     updated = models.DateTimeField(auto_now_add=False,null=True, blank=True)
 
     def fee(self):
-        fee = self.amount * Decimal('.03')  # Using Decimal('0.035') instead of 3.5 / 100
-        return fee.quantize(Decimal('.01'), rounding=ROUND_HALF_UP)  # Rounding to 2 decimal places
-        # fee = 0
-        # return fee
+        # fee = self.amount * Decimal('.03')  # Using Decimal('0.035') instead of 3.5 / 100
+        # return fee.quantize(Decimal('.01'), rounding=ROUND_HALF_UP)  # Rounding to 2 decimal places
+        fee = 0
+        return fee
 
     def receiving_amount(self):
         receiving_amount = self.amount - self.fee()
@@ -193,6 +193,7 @@ class History(models.Model):
     card_type = models.CharField(max_length=50,blank=True,null=True)
     card_tier = models.CharField(max_length=50,blank=True,null=True)
     transaction_id = models.CharField(max_length=100,blank=True,null=True)
+
 
 
     class Meta:

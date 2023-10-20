@@ -7,7 +7,7 @@ import datetime
 from decimal import Decimal
 
 
-def all_cards(request):
+def all_credit_cards(request):
     account = Account.objects.get(user=request.user)
     credit_card = CreditCard.objects.filter(user=request.user)
 
@@ -15,7 +15,7 @@ def all_cards(request):
         "account":account,
         "credit_card":credit_card,
     }
-    #return render(request, "credit_card/all_card.html", context)
+    return render(request, "credit_card/all_credit_cards.html", context)
 
 def credit_card_detail(request,credit_card_id):
     account = Account.objects.get(user=request.user)

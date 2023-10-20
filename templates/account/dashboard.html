@@ -28,37 +28,37 @@
                                             
                                     </div>
                                     <div class="right-side">
-                                        <div class="right-top">
-                                            <select>
-                                                <option value="1">US Dollar</option>
-                                                <option value="2">US Dollar</option>
-                                                <option value="3">US Dollar</option>
-                                            </select>
-                                            <div class="dropdown-area">
-                                                <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <img src="{% static 'assets1/images/icon/option.png' %}" alt="icon">
-                                                </button>
-                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                                    <li><a class="dropdown-item" href="#">Fiat Currency</a></li>
-                                                    <li><a class="dropdown-item" href="#">crypto Currency</a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div class="right-bottom">
+                                            <!-- <div class="right-top">
+                                                <select>
+                                                    <option value="1">US Dollar</option>
+                                                    <option value="2">US Dollar</option>
+                                                    <option value="3">US Dollar</option>
+                                                </select>
+                                                <div class="dropdown-area">
+                                                    <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <img src="{% static 'assets1/images/icon/option.png' %}" alt="icon">
+                                                    </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                        <li><a class="dropdown-item" href="#">Fiat Currency</a></li>
+                                                        <li><a class="dropdown-item" href="#">crypto Currency</a></li>
+                                                    </ul>
+                                                </div>
+                                            </div> -->
+                                        <!-- <div class="right-bottom">
                                             
                                             {% for recent_transfer in recent_transfer %}
                                                 <h4><small>₹ {{recent_transfer.amount|intcomma }} </small></h4>
                                             {% endfor %}
                                             <h5><small>Recent Transfer</small></h5>
                                         </div>
-                                        
+                                         -->
                                     </div>
                                 </div>
                                 <div class="bottom-area">
                                     <div class="left-side">
                                         <a href="{% url 'core:search_account' %}" class="cmn-btn">Transfer Money</a>
-                                        <a href="{  'core:request_search_account' %}" class="cmn-btn">Receive Money</a>
-                                        <a href="withdraw-money-step-1.html" class="cmn-btn">All Cards</a>
+                                        <a href="{% url  'core:request_payment_search_account' %}" class="cmn-btn">Request Money</a>
+                                        <a href="{% url 'core:all_credit_cards' %}" class="cmn-btn">All Cards</a>
                                     </div>
                                     <div class="right-side">
                                         <div class="dropdown-area">
@@ -86,14 +86,14 @@
                                             <button class="nav-link" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming" type="button" role="tab" aria-controls="upcoming" aria-selected="false">Received</button>
                                         </li>
                                         <li class="nav-item" role="presentation">
-                                            <button class="nav-link" id="sender-request-tab" data-bs-toggle="tab" data-bs-target="#sender-request" type="button" role="tab" aria-controls="upcoming" aria-selected="false">Sent Requests</button>
+                                            <button class="nav-link" id="sender_request_tab" data-bs-toggle="tab" data-bs-target="#sender_request" type="button" role="tab" aria-controls="upcoming" aria-selected="false">Sent Requests</button>
                                         </li>
                                         <li class="nav-item" role="presentation">
-                                            <button class="nav-link" id="reciever-request-tab" data-bs-toggle="tab" data-bs-target="#reciever-request" type="button" role="tab" aria-controls="upcoming" aria-selected="false">Received Requests</button>
+                                            <button class="nav-link" id="reciever_reques_tab" data-bs-toggle="tab" data-bs-target="#reciever_request" type="button" role="tab" aria-controls="upcoming" aria-selected="false">Received Requests</button>
                                         </li>
                                     </ul>
                                     <div class="view-all d-flex align-items-center">
-                                        <a href="{  'core:transactions' %}">View All</a>
+                                        <a href="{% url 'core:all_transactions' %}">View All</a>
                                         <img src="{% static 'assets1/images/icon/right-arrow.png' %}" alt="icon">
                                     </div>
                                 </div>
@@ -112,35 +112,35 @@
                                                 </thead>
                                                 <tbody>
                                                     
-                                                    {% for s in sender_transaction %}
+                                                    {% for s in sent_transaction %}
                                                         <tr data-bs-toggle="modal" data-bs-target="#transactionsMod">
                                                             <th scope="row">
                                                                 <p>{{s.reciever.kyc.full_name|title}}</p>
                                                                 <p class="mdr">{{s.transaction_type|title}}</p>
                                                             </th>
                                                             <td>
-                                                                <p><small>{{s.date|date:"h:i"}}</small></p>
+                                                                <p><small>{{s.date|date:"H:i"}}</small></p>
                                                                 <p class="mdr">{{s.date|date:"d M, Y"}}</p>
                                                             </td>
                                                             <td>
-                                                                {% if s.status == 'completed' %}
-                                                                    <p class="text-success">{{s.status|title}}</p>
+                                                                {% if s.transaction_status == 'completed' %}
+                                                                    <p class="text-success">{{s.transaction_status|title}}</p>
                                                                 {% endif %}
-                                                                {% if s.status == 'pending' %}
-                                                                    <p class="inprogress">{{s.status|title}}</p>
+                                                                {% if s.transaction_status == 'pending' %}
+                                                                    <p class="inprogress">{{s.transaction_status|title}}</p>
                                                                 {% endif %}
-                                                                {% if s.status == 'failed' %}
-                                                                    <p class="danger">{{s.status|title}}</p>
+                                                                {% if s.transaction_status == 'failed' %}
+                                                                    <p class="danger">{{s.transaction_status|title}}</p>
                                                                 {% endif %}
-                                                                {% if s.status == 'processing' %}
-                                                                    <p class="inprogress">{{s.status|title}}</p>
+                                                                {% if s.transaction_status == 'processing' %}
+                                                                    <p class="inprogress">{{s.transaction_status|title}}</p>
                                                                 {% endif %}
                                                             </td>
                                                             <td>
-                                                                <p>₹-{{s.amount|intcomma }}</p>
+                                                                <p>–₹{{s.amount|intcomma}}</p>
                                                             </td>
                                                             <td>
-                                                                <a href="{  'core:transaction-detail' s.transaction_id %}" class=""><i class="fas fa-eye"></i></a>
+                                                                <a href="{% url 'core:transaction_detail_sent' s.transaction_id %}" class=""><i class="fas fa-eye"></i></a>
 
                                                             </td>
                                                         </tr>
@@ -164,35 +164,35 @@
                                                 </thead>
                                                 <tbody>
                                                     
-                                                    {% for s in reciever_transaction %}
+                                                    {% for r in recieved_transaction %}
                                                         <tr data-bs-toggle="modal" data-bs-target="#transactionsMod">
                                                             <th scope="row">
-                                                                <p>{{s.sender.kyc.full_name|title}}</p>
+                                                                <p>{{r.sender.kyc.full_name|title}}</p>
                                                                 <p class="mdr">{{s.transaction_type|title}}</p>
                                                             </th>
                                                             <td>
-                                                                <p><small>{{s.date|date:"h:i"}}</small></p>
-                                                                <p class="mdr">{{s.date|date:"d M, Y"}}</p>
+                                                                <p><small>{{r.date|date:"H:i"}}</small></p>
+                                                                <p class="mdr">{{r.date|date:"d M, Y"}}</p>
                                                             </td>
                                                             <td>
-                                                                {% if s.status == 'completed' %}
-                                                                    <p class="text-success">{{s.status|title}}</p>
+                                                                {% if r.transaction_status == 'completed' %}
+                                                                    <p class="text-success">{{r.transaction_status|title}}</p>
                                                                 {% endif %}
-                                                                {% if s.status == 'pending' %}
-                                                                    <p class="inprogress">{{s.status|title}}</p>
+                                                                {% if r.transaction_status == 'pending' %}
+                                                                    <p class="inprogress">{{r.transaction_status|title}}</p>
                                                                 {% endif %}
-                                                                {% if s.status == 'failed' %}
-                                                                    <p class="danger">{{s.status|title}}</p>
+                                                                {% if r.transaction_status == 'failed' %}
+                                                                    <p class="danger">{{r.transaction_status|title}}</p>
                                                                 {% endif %}
-                                                                {% if s.status == 'processing' %}
-                                                                    <p class="inprogress">{{s.status|title}}</p>
+                                                                {% if r.transaction_status == 'processing' %}
+                                                                    <p class="inprogress">{{r.transaction_status|title}}</p>
                                                                 {% endif %}
                                                             </td>
                                                             <td>
-                                                                <p>₹ +{{s.amount|intcomma }}</p>
+                                                                <p>+₹{{r.receiving_amount|intcomma}}</p>
                                                             </td>
                                                             <td>
-                                                                <a href="{  'core:transaction-detail' s.transaction_id %}" class=""><i class="fas fa-eye"></i></a>
+                                                                <a href="{% url 'core:transaction_detail_received' r.transaction_id %}" class=""><i class="fas fa-eye"></i></a>
                                                             </td>
                                                         </tr>
                                                     {% endfor %}
@@ -201,7 +201,7 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" id="sender-request" role="tabpanel" aria-labelledby="sender-request-tab">
+                                    <div class="tab-pane fade" id="sender_request" role="tabpanel" aria-labelledby="sender_request_tab">
                                         <div class="table-responsive">
                                             <table class="table">
                                                 <thead>
@@ -215,55 +215,55 @@
                                                 </thead>
                                                 <tbody>
                                                     
-                                                    {% for s in request_sender_transaction %}
+                                                    {% for s in request_sent_transaction %}
                                                         <tr data-bs-toggle="modal" data-bs-target="#transactionsMod">
                                                             <th scope="row">
                                                                 <p>{{s.reciever.kyc.full_name|title}}</p>
                                                                 <p class="mdr">{{s.transaction_type|title}}</p>
                                                             </th>
                                                             <td>
-                                                                <p><small>{{s.date|date:"h:i"}}</small></p>
+                                                                <p><small>{{s.date|date:"H:i"}}</small></p>
                                                                 <p class="mdr">{{s.date|date:"d M, Y"}}</p>
                                                             </td>
                                                             <td>
-                                                                {% if s.status == 'completed' %}
-                                                                    <p class="text-success">{{s.status|title}}</p>
+                                                                {% if s.transaction_status == 'completed' %}
+                                                                    <p class="text-success">{{s.transaction_status|title}}</p>
                                                                 {% endif %}
-                                                                {% if s.status == 'pending' %}
-                                                                    <p class="inprogress">{{s.status|title}}</p>
+                                                                {% if s.transaction_status == 'pending' %}
+                                                                    <p class="inprogress">{{s.transaction_status|title}}</p>
                                                                 {% endif %}
-                                                                {% if s.status == 'failed' %}
-                                                                    <p class="danger">{{s.status|title}}</p>
+                                                                {% if s.transaction_status == 'failed' %}
+                                                                    <p class="danger">{{s.transaction_status|title}}</p>
                                                                 {% endif %}
-                                                                {% if s.status == 'processing' %}
-                                                                    <p class="inprogress">{{s.status|title}}</p>
+                                                                {% if s.transaction_status == 'processing' %}
+                                                                    <p class="inprogress">{{s.transaction_status|title}}</p>
                                                                 {% endif %}
-                                                                {% if s.status == 'request_sent' %}
-                                                                    <p class="text-success">{{s.status|title}}</p>
+                                                                {% if s.transaction_status == 'request_sent' %}
+                                                                    <p class="text-success">Request Sent</p>
                                                                 {% endif %}
-                                                                {% if s.status == 'request_settled' %}
-                                                                    <p class="text-success">{{s.status|title}}</p>
+                                                                {% if s.transaction_status == 'request_settled' %}
+                                                                    <p class="text-success">Request Settled</p>
                                                                 {% endif %}
-                                                                {% if s.status == 'request_processing' %}
-                                                                    <p class="inprogress">{{s.status|title}}</p>
+                                                                {% if s.transaction_status == 'request_processing' %}
+                                                                    <p class="inprogress">{{s.transaction_status|title}}</p>
                                                                 {% endif %}
                                                             </td>
                                                             <td>
-                                                                <p>₹+{{s.amount|intcomma }}</p>
+                                                                <p>+₹{{s.amount|intcomma}}</p>
                                                             </td>
                                                             <td>
-                                                                {% if s.status == "request_sent" %}
-                                                                <a href="{  'core:transaction-detail' s.transaction_id %}" class="btn btn-primary"><i class="fas fa-eye"></i> View</a>
-                                                                <a href="{  'core:delete-request' s.sender.account.account_number s.transaction_id %}" class=" btn btn-danger"> <i class="fas fa-x"></i> Delete</a>
+                                                                {% if s.transaction_status == "request_sent" %}
+                                                                <a href="{% url 'core:request_details_sent' s.transaction_id %}" class="btn btn-primary"><i class="fas fa-eye"></i> View</a>
+                                                                <a href="{% url 'core:delete_payment_request' s.sender.account.account_number s.transaction_id %}" class=" btn btn-danger"> <i class="fas fa-x"></i> Delete</a>
                                                                 {% endif %}
 
-                                                                {% if s.status == "request_processing" %}
-                                                                <a href="{  'core:transaction-detail' s.transaction_id %}" class="btn btn-primary"><i class="fas fa-eye"></i> View</a>
-                                                                <a href="{  'core:delete-request' s.sender.account.account_number s.transaction_id %}" class=" btn btn-danger"> <i class="fas fa-x"></i> Delete</a>
+                                                                {% if s.transaction_status == "request_processing" %}
+                                                                <a href="{% url 'core:request_details_sent' s.transaction_id %}" class="btn btn-primary"><i class="fas fa-eye"></i> View</a>
+                                                                <a href="{% url 'core:delete_payment_request' s.sender.account.account_number s.transaction_id %}" class=" btn btn-danger"> <i class="fas fa-x"></i> Delete</a>
                                                                 {% endif %}
 
-                                                                {% if s.status == "request_settled" %}
-                                                                <a class="btn btn-success"><i class="fas fa-check-circle"></i> Settled</a>
+                                                                {% if s.transaction_status == "request_settled" %}
+                                                                <a href="" class="btn btn-success"><i class="fas fa-check-circle"></i> Settled</a>
                                                                 {% endif %}
 
                                                             </td>
@@ -274,7 +274,7 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" id="reciever-request" role="tabpanel" aria-labelledby="reciever-request-tab">
+                                    <div class="tab-pane fade" id="reciever_request" role="tabpanel" aria-labelledby="reciever_request_tab">
                                         <div class="table-responsive">
                                             <table class="table">
                                                 <thead>
@@ -288,51 +288,52 @@
                                                 </thead>
                                                 <tbody>
                                                     
-                                                    {% for s in request_reciever_transaction %}
+                                                    {% for r in request_recieved_transaction %}
                                                         <tr data-bs-toggle="modal" data-bs-target="#transactionsMod">
                                                             <th scope="row">
-                                                                <p>{{s.sender.kyc.full_name|title}}</p>
-                                                                <p class="mdr">{{s.transaction_type|title}}</p>
+                                                                <p>{{r.sender.kyc.full_name|title}}</p>
+                                                                <p class="mdr">{{r.transaction_type|title}}</p>
                                                             </th>
                                                             <td>
-                                                                <p><small>{{s.date|date:"h:i"}}</small></p>
-                                                                <p class="mdr">{{s.date|date:"d M, Y"}}</p>
+                                                                <p><small>{{r.date|date:"H:i"}}</small></p>
+                                                                <p class="mdr">{{r.date|date:"d M, Y"}}</p>
                                                             </td>
                                                             <td>
-                                                                {% if s.status == 'completed' %}
-                                                                    <p class="text-success">{{s.status|title}}</p>
+                                                                {% if r.transaction_status == 'completed' %}
+                                                                    <p class="text-success">{{r.transaction_status|title}}</p>
                                                                 {% endif %}
-                                                                {% if s.status == 'pending' %}
-                                                                    <p class="inprogress">{{s.status|title}}</p>
+                                                                {% if r.transaction_status == 'pending' %}
+                                                                    <p class="inprogress">{{r.transaction_status|title}}</p>
                                                                 {% endif %}
-                                                                {% if s.status == 'failed' %}
-                                                                    <p class="danger">{{s.status|title}}</p>
+                                                                {% if r.transaction_status == 'failed' %}
+                                                                    <p class="danger">{{r.transaction_status|title}}</p>
                                                                 {% endif %}
-                                                                {% if s.status == 'processing' %}
-                                                                    <p class="inprogress">{{s.status|title}}</p>
+                                                                {% if r.transaction_status == 'processing' %}
+                                                                    <p class="inprogress">{{r.transaction_status|title}}</p>
                                                                 {% endif %}
-                                                                {% if s.status == 'request_sent' %}
-                                                                <p class="text-success">{{s.status|title}}</p>
+                                                                {% if r.transaction_status == 'request_sent' %}
+                                                                <p class="text-success">Request Recieved</p>
                                                                 {% endif %}
-                                                                {% if s.status == 'request_settled' %}
-                                                                    <p class="text-success">{{s.status|title}}</p>
+                                                                {% if r.transaction_status == 'request_settled' %}
+                                                                    <p class="text-success">Request Settled</p>
                                                                 {% endif %}
-                                                                {% if s.status == 'request_processing' %}
-                                                                    <p class="inprogress">{{s.status|title}}</p>
+                                                                {% if r.transaction_status == 'request_processing' %}
+                                                                    <p class="inprogress">{{r.transaction_status|title}}</p>
                                                                 {% endif %}
                                                             </td>
                                                             <td>
-                                                                <p>₹ +{{s.amount|intcomma }} </p>
+                                                                <p>+₹{{r.amount|intcomma}}</p>
                                                             </td>
                                                             <td>
                                                                 
-                                                                {% if s.status == "request_sent" %}
-                                                                    <a href="{  'core:settlement-confirmation' s.sender.account.account_number s.transaction_id %}" class="btn btn-primary"><i class="fas fa-check-circle"></i> Settle</a>
-                                                                    <a href="{  'core:transaction-detail' s.transaction_id %}" class=" btn btn-danger"> <i class="fas fa-x"></i> Cancel</a>
+                                                                {% if r.transaction_status == "request_sent" %}
+                                                                    <a href="{% url 'core:request_settlement_confirmation' r.sender.account.account_number r.transaction_id %}" class="btn btn-success"><i class="fas fa-check-circle"></i> Settle</a>
+                                                                    <a href="{% url 'core:request_details_received' r.transaction_id %}" class=" btn btn-primary"> <i class="fas fa-eye"></i> View</a>
+                                                                    <a href="{% url 'core:delete_payment_request' r.sender.account.account_number r.transaction_id %}" class=" btn btn-danger"> <i class="fas fa-x"></i> Cancel</a>
                                                                 {% endif %}
 
-                                                                {% if s.status == "request_settled" %}
-                                                                    <a href="" class="btn btn-success"><i class="fas fa-check-circle"></i> Settled</a>
+                                                                {% if r.transaction_status == "request_settled" %}
+                                                                    <a href="{% url 'core:request_details_received' r.transaction_id %}" class="btn btn-success"><i class="fas fa-check-circle"></i> Settled</a>
                                                                 {% endif %}
                                                                     
                                                             </td>
@@ -367,7 +368,7 @@
                                     {% for c in credit_card %}
                                         <a href="{% url 'core:credit_card_detail' c.credit_card_id %}">
                                             <div class="col-12">
-                                                <div class="card__main" style="height: 210px;">
+                                                <div class="card__main" style="height: 230px; width: 400px;">
                                                     <div class="{% if c.card_type == 'rupay' %}Front_card{% endif %}    {% if c.card_type == 'master' %}masterCard{% endif %}    {% if c.card_type == 'visa' %}visaCard{% endif %}">
                                                     <div class="top_card"  style="padding: 15px;">
                                                         <span class="visa">{{c.card_type|upper}}  <small style="font-weight: lighter; font-size:11px" class="{% if c.card_tier == 'classic' %}classic_card{% endif %}    {% if c.card_type == 'gold' %}gold_card{% endif %}    {% if c.card_type == 'platinum' %}platinum_card{% endif %}   {% if c.card_type == 'signature' %}signature_card{% endif %}  {% if c.card_type == 'infinite' %}infinite_card{% endif %}">{{c.card_tier|upper}}</small> </span>  
@@ -395,7 +396,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="card_info">
-                                                        <div class="card_holder_info" style="margin-top: 40px;">
+                                                        <div class="card_holder_info" style="margin-top: 80px;">
                                                             <span class="expire_month" >{{c.month}}</span>
                                                             <span class="slash">/</span>
                                                             <span class="expire_year">{{c.year_in_two_digits}}</span>
@@ -453,7 +454,7 @@
                                 <div class="section-text d-flex align-items-center justify-content-between">
                                     <h6>History ({{history.count}})</h6>
                                     <div class="view-all d-flex align-items-center">
-                                        <a href="javascript:void(0)">View All</a>
+                                        <a href="{% url 'core:all_history' %}">View All</a>
                                         <img src="{% static 'assets1/images/icon/right-arrow.png' %}" alt="icon">
                                     </div>
                                 </div>

@@ -1,0 +1,188 @@
+{% extends "partials/dashboard_base.html" %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+    <!-- Dashboard Section start -->
+    <section class="dashboard-section body-collapse">
+        <div class="overlay pt-120">
+            <div class="container-fruid">
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="section-content">
+                            
+                            <div class="transactions-area">
+                                <div class="section-text">
+                                    <h5>History</h5>
+                                    <p>Updated every several minutes</p>
+                                </div>
+                                <div class="top-area d-flex align-items-center justify-content-between">
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link active" id="latest-tab" data-bs-toggle="tab" data-bs-target="#latest" type="button" role="tab" aria-controls="latest" aria-selected="true" onclick="changeActiveStatus('latest-tab')">All</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming" type="button" role="tab" aria-controls="upcoming" aria-selected="false" onclick="changeActiveStatus('upcoming-tab')">Transactions</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="sender_request_tab" data-bs-toggle="tab" data-bs-target="#sender_request" type="button" role="tab" aria-controls="upcoming" aria-selected="false" onclick="changeActiveStatus('sender_request_tab')">Card</button>
+                                        </li>
+                                    </ul>
+                                    <div class="view-all d-flex align-items-center">
+                                        <a href="javascript:void(0)">View All</a>
+                                        <img src="{% static 'assets1/images/icon/right-arrow.png' %}" alt="icon">
+                                    </div>
+                                </div>
+                                
+                                
+                                <div class="tab-content mt-40">
+                                    <div class="tab-pane fade show active" id="latest" role="tabpanel" aria-labelledby="latest-tab">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Type</th>
+                                                        <th scope="col">Date</th>
+                                                        <th scope="col">Details</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    
+                                                    {% for h in history %}
+                                                        <tr data-bs-toggle="modal" data-bs-target="#transactionsMod">
+                                                            <th scope="row">
+                                                                <p>{{h.history_type|title}}</p>
+                                                            </th>
+                                                            <td>
+                                                                <p><small>{{h.date|date:"H:i"}}</small></p>
+                                                                <p class="mdr">{{h.date|date:"d M, Y"}}</p>
+                                                            </td>
+                                                            <td>
+                                                                <a href="{% url 'core:history_detail' h.nid %}" class=""><i class="fas fa-eye"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="upcoming" role="tabpanel" aria-labelledby="upcoming-tab">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Type</th>
+                                                        <th scope="col">Date</th>
+                                                        <th scope="col">Amount</th>
+                                                        <th class="col">Sender</th>
+                                                        <th class="col">Receiver</th>
+                                                        <th scope="col">Details</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for h in all_history %}
+                                                        {% if h.amount %}
+                                                            <tr data-bs-toggle="modal" data-bs-target="#transactionsMod">
+                                                                <th scope="row">
+                                                                    <p class="mdr">{{h.history_type|title}} </p>
+                                                                </th>
+                                                                <td>
+                                                                    <p><small>{{h.date|date:"H:i"}}</small></p>
+                                                                    <p class="mdr">{{h.date|date:"d M, Y"}}</p>
+                                                                </td>
+                                                    
+                                                                <td>
+                                                                    <p>₹{{h.amount|intcomma}}</p>
+                                                                </td>
+                                                                <td> 
+                                                                    {% if h.history_type == 'Withdrew Credit Card Funds' %}  
+                                                                            {{h.card_number}}
+                                                                    {% elif h.history_type == 'Funded Credit Card' %}
+                                                                            {{h.sender.kyc.full_name}}(Main Account)
+                                                                    {% else %}
+                                                                            {{h.sender.kyc.full_name}}
+                                                                    {% endif %}  
+                                                                  </td>
+                                                                <td>
+                                                                    {% if h.history_type == 'Funded Credit Card' %}  
+                                                                            {{h.card_number}}
+                                                                    {% elif h.history_type == 'Withdrew Credit Card Funds' %}
+                                                                            {{h.sender.kyc.full_name}}(Main Account)
+                                                                    {% else %}
+                                                                            {{h.sender.kyc.full_name}}
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>
+                                                                    <a href="{% url 'core:history_detail' h.nid %}" class=""><i class="fas fa-eye"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="sender_request" role="tabpanel" aria-labelledby="sender_request_tab">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Type</th>
+                                                        <th scope="col">Date</th>
+                                                        <th scope="col">Card Number</th>
+                                                        <th scope="col">Card Type</th>
+                                                        <th scope="col">Card Tier</th>
+                                                        <th scope="col">Details</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for h in all_history %}
+                                                        {% if not h.amount %}
+                                                            <tr data-bs-toggle="modal" data-bs-target="#transactionsMod">
+                                                                <th scope="row">
+                                                                    <p class="mdr">{{h.history_type|title}} </p>
+                                                                </th>
+                                                                <td>
+                                                                    <p><small>{{h.date|date:"H:i"}}</small></p>
+                                                                    <p class="mdr">{{h.date|date:"d M, Y"}}</p>
+                                                                </td>
+                                                    
+                                                                <td>
+                                                                    <p> {{h.card_number}} </p>
+                                                                </td>
+                                                                <td> 
+                                                                    {{h.card_type | title}} 
+                                                                  </td>
+                                                                <td>
+                                                                    {{h.card_tier | title}}
+                                                                </td>
+                                                                <td>
+                                                                    <a href="{% url 'core:history_detail' h.nid %}" class=""><i class="fas fa-eye"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    
+    {% endblock content %}

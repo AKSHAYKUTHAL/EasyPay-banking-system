@@ -5,6 +5,16 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 
 
+
+def all_transactions(request):
+    transactions = Transaction.objects.all()
+
+    context = {
+        'transactions':transactions
+    }
+
+    return render(request,'transaction/all_transactions.html',context)
+
 @login_required
 def transaction_list(request):
     sent_transaction = Transaction.objects.filter(sender=request.user,transaction_type='transfer').order_by('-id')

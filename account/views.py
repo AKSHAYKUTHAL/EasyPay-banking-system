@@ -4,7 +4,7 @@ from account.forms import KYCForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from core.forms import CreditCardForm
-from core.models import CreditCard,Notification,History
+from core.models import CreditCard,Notification,History,Transaction
 import datetime
 
 
@@ -58,6 +58,15 @@ def kyc_registration(request):
 
 
 def dashboard(request):
+    sent_transaction = Transaction.objects.filter(sender=request.user,transaction_type='transfer').order_by('-id')
+    recieved_transaction = Transaction.objects.filter(reciever=request.user,transaction_type='transfer').order_by('-id')
+
+
+    request_sent_transaction = Transaction.objects.filter(sender=request.user, transaction_type="request").order_by('-id')
+    request_recieved_transaction = Transaction.objects.filter(reciever=request.user, transaction_type="request").order_by('-id')
+
+
+
     month = datetime.datetime.now().month
     year = datetime.datetime.now().year + 5
 
@@ -113,5 +122,10 @@ def dashboard(request):
         'month':month,
         'year':year,
         'credit_card':credit_card,
+        "sent_transaction":sent_transaction,
+        "recieved_transaction":recieved_transaction,
+
+        'request_sent_transaction':request_sent_transaction,
+        'request_recieved_transaction':request_recieved_transaction,
     }
     return render(request,'account/dashboard.html',context)
