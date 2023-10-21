@@ -107,6 +107,12 @@ class Transaction(models.Model):
         fee = 0
         return fee
 
+    def transaction_year(self):
+        return self.date.year
+    
+    def transaction_month(self):
+        return self.date.month
+
     def receiving_amount(self):
         receiving_amount = self.amount - self.fee()
         return receiving_amount.quantize(Decimal('.01'), rounding=ROUND_HALF_UP)  # Rounding to 2 decimal places

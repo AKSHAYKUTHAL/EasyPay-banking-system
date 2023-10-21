@@ -445,11 +445,70 @@
                                             <option value="1">Jan</option>
                                             <option value="2">Feb</option>
                                             <option value="3">Mar</option>
+                                            
                                         </select>
                                     </div>
                                 </div>
-                                <div id="chart"></div>
+                                <div id="pie_chart"></div>
                             </div>
+                            <script>
+                                var sent_transaction = "{{ sent_transaction_count }}"; 
+                                var received_transaction = "{{ recieved_transaction_count }}"; 
+                                var request_sent_transaction = "{{ request_sent_transaction_count }}"; 
+                                var request_received_transaction = "{{ request_recieved_transaction_count }}";
+                            
+                                // Convert the string values to integers
+                                sent_transaction = parseInt(sent_transaction);
+                                received_transaction = parseInt(received_transaction);
+                                request_sent_transaction = parseInt(request_sent_transaction);
+                                request_received_transaction = parseInt(request_received_transaction);
+                            
+                                var total = sent_transaction + received_transaction + request_sent_transaction + request_received_transaction;
+                            
+                                var options = {
+                                    series: [sent_transaction, received_transaction, request_sent_transaction, request_received_transaction],
+                                    labels: ['Sent', 'Received', 'Request Sent', 'Request Received'],
+                                    chart: {
+                                        type: 'donut',
+                                        height: 350
+                                    },
+                                    dataLabels: {
+                                        enabled: true
+                                    },
+                                    plotOptions: {
+                                        pie: {
+                                            customScale: 1,
+                                            donut: {
+                                                labels: {
+                                                    show: true,
+                                                    total: {
+                                                        show: true,
+                                                        label: 'Total',
+                                                        formatter: function (w) {
+                                                            return total;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    responsive: [{
+                                        breakpoint: 480,
+                                        options: {
+                                            chart: {
+                                                width: 200,
+                                                height: 200
+                                            },
+                                            legend: {
+                                                position: 'bottom'
+                                            }
+                                        }
+                                    }]
+                                };
+                            
+                                var chart = new ApexCharts(document.querySelector("#pie_chart"), options);
+                                chart.render();
+                            </script>
                             <div class="single-item">
                                 <div class="section-text d-flex align-items-center justify-content-between">
                                     <h6>History ({{history.count}})</h6>
@@ -516,6 +575,7 @@
                                                     {% if h.history_type == "De-Activated Credit Card"  %}
                                                         <p class="mdr" style="font-size: 14px;">You de-activated your credit card.</p><br>Card Number :<b>{{h.card_number}}</b><br>Card Type : <b>{{h.card_type | upper}}</b><br>Card Tier : <b>{{h.card_tier | upper}}</b> </p>
                                                         <p class="mdr time-area">{{h.date}}</p>
+                                                        <i class="fa fa-arrow-circle-right fa-lg" aria-hidden="true" style="color: green;" ></i>
                                                     {% endif %}
                                                     {% if h.history_type == "Activated Credit Card" %}
                                                         <p class="mdr" style="font-size: 14px;">You activated your credit card.</p><br>Card Number :<b>{{h.card_number}}</b><br>Card Type : <b>{{h.card_type | upper}}</b><br>Card Tier : <b>{{h.card_tier | upper}}</b> </p >
