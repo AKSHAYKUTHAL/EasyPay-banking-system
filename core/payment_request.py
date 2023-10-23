@@ -101,57 +101,66 @@ def amount_request_final_process(request, account_number,transaction_id):
     transaction = Transaction.objects.get(transaction_id=transaction_id)
 
     if request.method == 'POST':
-        pin_number = request.POST.get('pin_number')
-        if pin_number == request.user.account.pin_number:
-            transaction.transaction_status = 'request_sent'
-            transaction.save()
+        try:
+            if transaction.transaction_status != 'request_sent':
 
-            Notification.objects.create(
-                user=account.user,
-                notification_type="Recieved Payment Request",
-                amount=transaction.amount,
-                sender = request.user,
-                receiver = account.user,
-                transaction_id = transaction.transaction_id
-                
-            )
-            History.objects.create(
-                user=account.user,
-                history_type="Recieved Payment Request",
-                amount=transaction.amount,
-                sender = request.user,
-                receiver = account.user,
-                transaction_id = transaction.transaction_id
-                
-            )
+                pin_number = request.POST.get('pin_number')
+                if pin_number == request.user.account.pin_number:
+                    transaction.transaction_status = 'request_sent'
+                    transaction.save()
+
+                    Notification.objects.create(
+                        user=account.user,
+                        notification_type="Recieved Payment Request",
+                        amount=transaction.amount,
+                        sender = request.user,
+                        receiver = account.user,
+                        transaction_id = transaction.transaction_id
+                        
+                    )
+                    History.objects.create(
+                        user=account.user,
+                        history_type="Recieved Payment Request",
+                        amount=transaction.amount,
+                        sender = request.user,
+                        receiver = account.user,
+                        transaction_id = transaction.transaction_id
+                        
+                    )
+                    
+                    
+                    Notification.objects.create(
+                        user=request.user,
+                        amount=transaction.amount,
+                        notification_type="Sent Payment Request",
+                        sender = request.user,
+                        receiver = account.user,
+                        transaction_id = transaction.transaction_id
+
+                    )
+                    History.objects.create(
+                        user=request.user,
+                        amount=transaction.amount,
+                        history_type="Sent Payment Request",
+                        sender = request.user,
+                        receiver = account.user,
+                        transaction_id = transaction.transaction_id
+
+                    )
+
+                    messages.success(request,'Your payment request have been sent successfully. ')
+                    time.sleep(1)
+                    return redirect('core:amount_request_completed',account.account_number,transaction.transaction_id)
+                else:
+                    messages.error(request,'Wrong Pin Number')
+                    return redirect('core:amount_request_confirmation',account.account_number,transaction.transaction_id)
+            else:
+                messages.error(request,'You already completed this transaction')
+                return redirect('core:request_payment_search_account')
+        except Transaction.DoesNotExist:
+            messages.error(request,'An Error Occured, Try again')
+            return redirect('account:dashboard')   
             
-            
-            Notification.objects.create(
-                user=request.user,
-                amount=transaction.amount,
-                notification_type="Sent Payment Request",
-                sender = request.user,
-                receiver = account.user,
-                transaction_id = transaction.transaction_id
-
-            )
-            History.objects.create(
-                user=request.user,
-                amount=transaction.amount,
-                history_type="Sent Payment Request",
-                sender = request.user,
-                receiver = account.user,
-                transaction_id = transaction.transaction_id
-
-            )
-
-            messages.success(request,'Your payment request have been sent successfully. ')
-            time.sleep(1)
-            return redirect('core:amount_request_completed',account.account_number,transaction.transaction_id)
-        else:
-            messages.error(request,'Wrong Pin Number')
-            return redirect('core:amount_request_confirmation',account.account_number,transaction.transaction_id)
-        
     else:
         messages.error(request,'An Error Occured!,Try Again Later.')
         return redirect('account:dashboard')
@@ -219,60 +228,65 @@ def request_settlement_processing(request,account_number,transaction_id):
     sender_account = request.user.account
 
     if request.method == 'POST':
-        pin_number = request.POST.get('pin_number')
-        if pin_number == sender_account.pin_number:
-            if sender_account.account_balance <= 0 or sender_account.account_balance < transaction.payment_with_fee():
-                messages.error(request,'Insufficient Funds, Fund your accont and try agin.')
-            else:
-                sender_account.account_balance -= transaction.payment_with_fee()
-                sender_account.save()
+        if transaction.transaction_status != 'request_settled':
 
-                account.account_balance += transaction.amount
-                account.save()
+            pin_number = request.POST.get('pin_number')
+            if pin_number == sender_account.pin_number:
+                if sender_account.account_balance <= 0 or sender_account.account_balance < transaction.payment_with_fee():
+                    messages.error(request,'Insufficient Funds, Fund your accont and try agin.')
+                else:
+                    sender_account.account_balance -= transaction.payment_with_fee()
+                    sender_account.save()
 
-                transaction.transaction_status = 'request_settled'
-                transaction.save()
+                    account.account_balance += transaction.amount
+                    account.save()
 
-                Notification.objects.create(
-                user=account.user,
-                notification_type="Settled Payment Request To",
-                amount=transaction.amount,
-                sender = request.user,
-                receiver = account.user,
-                transaction_id = transaction.transaction_id
-                )
-                History.objects.create(
-                user=account.user,
-                history_type="Settled Payment Request To",
-                amount=transaction.amount,
-                sender = request.user,
-                receiver = account.user,
-                transaction_id = transaction.transaction_id
-                )
-            
-                Notification.objects.create(
-                    user=request.user,
+                    transaction.transaction_status = 'request_settled'
+                    transaction.save()
+
+                    Notification.objects.create(
+                    user=account.user,
+                    notification_type="Settled Payment Request To",
                     amount=transaction.amount,
-                    notification_type="Settled Payment Request From",
                     sender = request.user,
                     receiver = account.user,
                     transaction_id = transaction.transaction_id
-                )
-                History.objects.create(
-                    user=request.user,
+                    )
+                    History.objects.create(
+                    user=account.user,
+                    history_type="Settled Payment Request To",
                     amount=transaction.amount,
-                    history_type="Settled Payment Request From",
                     sender = request.user,
                     receiver = account.user,
                     transaction_id = transaction.transaction_id
-                )
+                    )
                 
-                messages.success(request,f"Settled to {account.user.kyc.full_name} was successful.")
-                time.sleep(1)
-                return redirect('core:request_settlement_completed',account.account_number,transaction.transaction_id)
+                    Notification.objects.create(
+                        user=request.user,
+                        amount=transaction.amount,
+                        notification_type="Settled Payment Request From",
+                        sender = request.user,
+                        receiver = account.user,
+                        transaction_id = transaction.transaction_id
+                    )
+                    History.objects.create(
+                        user=request.user,
+                        amount=transaction.amount,
+                        history_type="Settled Payment Request From",
+                        sender = request.user,
+                        receiver = account.user,
+                        transaction_id = transaction.transaction_id
+                    )
+                    
+                    messages.success(request,f"Settled to {account.user.kyc.full_name} was successful.")
+                    time.sleep(1)
+                    return redirect('core:request_settlement_completed',account.account_number,transaction.transaction_id)
+            else:
+                messages.error(request,'Incorrect Pin')
+                return redirect('core:request_settlement_confirmation', account.account_number, transaction.transaction_id)
         else:
-            messages.error(request,'Incorrect Pin')
-            return redirect('core:request_settlement_confirmation', account.account_number, transaction.transaction_id)
+            messages.error(request,'You already settled this request')
+            return redirect('account:dashboard')
     else:
             messages.error(request,'Error Ocuured')
             return redirect('account:dashboard')
@@ -317,7 +331,9 @@ def delete_payment_request(request,account_number,transaction_id):
             messages.success(request,'Payment Request Deleted Successfully.')
             return redirect('core:transactions')
         else:
-            messages.error(request,'You are not authorized to delete this.')
+            transaction.transaction_status = 'request_declined'
+            transaction.save()
+            messages.error(request,'You declined a payment request')
             return redirect('core:transactions')
     except:
         messages.error(request,'Transfer does not Exist!!!')

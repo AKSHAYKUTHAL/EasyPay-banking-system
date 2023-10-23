@@ -11,7 +11,7 @@
                     <div class="head-area d-flex align-items-center justify-content-between">
                         <h4>Make a Payment</h4>
                         <div class="icon-area">
-                            <img src="{% static 'assets1/images/icon/support-icon.png' %}" alt="icon">
+                            <img src="{{user_profile_pic.url}}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover;" alt="icon">
                         </div>
                     </div>
                     <div class="choose-recipient">
@@ -120,7 +120,7 @@
                             <li><h5 id="total_to_pay">₹ 0.00</h5></li>
                         </ul>
                         <div class="footer-area mt-40">
-                            <a href="pay-step-1.html">Previous Step</a>
+                            <a href="#" onclick="location.href = document.referrer; return false;">Previous Step</a>
                             <button type="submit" style="padding: 10px 30px; border-radius: 10px; background: rgb(98, 0, 255); color: #fff;" class="active">Next</button>
                         </div>
                     </form>

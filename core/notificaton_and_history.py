@@ -46,9 +46,10 @@ def history_detail(request,nid):
         messages.error(request, 'An Error Occured')
         return redirect('account:dashboard')
 
-    if history.transaction_id:
-        transaction = Transaction.objects.get(transaction_id=history.transaction_id)
-    else:
+    try:
+        if history.transaction_id:
+            transaction = Transaction.objects.get(transaction_id=history.transaction_id)
+    except:
         transaction = None
 
     # if notification.card_number:

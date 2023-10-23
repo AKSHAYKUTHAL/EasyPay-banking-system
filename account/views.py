@@ -59,13 +59,13 @@ def kyc_registration(request):
 
 def dashboard(request):
     sent_transaction = Transaction.objects.filter(sender=request.user,transaction_type='transfer').order_by('-id')
-    recieved_transaction = Transaction.objects.filter(reciever=request.user,transaction_type='transfer').order_by('-id')
+    recieved_transaction = Transaction.objects.filter(reciever=request.user,transaction_type='transfer').exclude(transaction_status='cancelled').order_by('-id')
 
     sent_transaction_count = sent_transaction.count()
     recieved_transaction_count = recieved_transaction.count()
 
     request_sent_transaction = Transaction.objects.filter(sender=request.user, transaction_type="request").order_by('-id')
-    request_recieved_transaction = Transaction.objects.filter(reciever=request.user, transaction_type="request").order_by('-id')
+    request_recieved_transaction = Transaction.objects.filter(reciever=request.user, transaction_type="request").exclude(transaction_status='request_processing').order_by('-id')
 
     request_sent_transaction_count = request_sent_transaction.count()
     request_recieved_transaction_count = request_recieved_transaction.count()

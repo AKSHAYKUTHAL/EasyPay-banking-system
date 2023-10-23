@@ -26,7 +26,15 @@
                                                             <div class="row">
                                                                 <div class="col-sm-5 text-center">
                                                                     <div class="icon-area">
-                                                                        <h4><b>Sent</b></h4>
+                                                                        <h4><b>Sent
+                                                                            
+                                                                            {% if  transaction.transaction_status == 'cancelled' %}
+                                                                                <h5 style="color: red;">(cancelled)</h5>
+                                                                            {% endif %}
+                                                                            <div class="icon-area">
+                                                                                <img src="{% static 'assets1/images/icon/transaction-details-icon.png' %}" alt="icon">
+                                                                            </div>
+                                                                        </b></h4>
  
                                                                         <!-- <img style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;" src="{{transaction.reciever.kyc.image.url}}" alt="icon"> -->
                                                                     </div>
@@ -46,7 +54,10 @@
                                                                             <p class="danger">{{transaction.transaction_status|title}}</p>
                                                                         {% endif %}
                                                                         {% if transaction.transaction_status == 'processing' %}
-                                                                            <p class="text-warning">{{transaction.transaction_status|title}}</p>
+                                                                            <p class="text-warning">Waiting Cofirmation</p>
+                                                                        {% endif %}
+                                                                        {% if transaction.transaction_status == 'cancelled' %}
+                                                                            <p class="text-danger">{{transaction.transaction_status|title}}</p>
                                                                         {% endif %}
                                                                     </div>
                                                                 </div>

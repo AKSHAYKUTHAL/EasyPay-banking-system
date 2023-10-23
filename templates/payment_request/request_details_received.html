@@ -26,10 +26,16 @@
                                                             <div class="row">
                                                                 <div class="col-sm-5 text-center">
                                                                     <div class="icon-area">
+                                                                        <div class="icon-area">
+                                                                            <img src="{% static 'assets1/images/icon/transaction-details-icon.png' %}" alt="icon">
+                                                                        </div>
                                                                         {% if transaction.transaction_status == 'request_settled' %}
-                                                                        <h4><b>Request Settled</b></h4>
+                                                                            <h4><b>Request Settled</b></h4>
+                                                                        {% endif %}
+                                                                        {% if transaction.transaction_status == 'request_declined' %}
+                                                                            <h4 style="color: red;"><b>Request (Declined)</b></h4>
                                                                         {% else %}
-                                                                        <h4><b>Requested</b></h4>
+                                                                            <h4><b>Requested</b></h4>
                                                                         {% endif %}
  
                                                                         <!-- <img style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;" src="{{transaction.reciever.kyc.image.url}}" alt="icon"> -->

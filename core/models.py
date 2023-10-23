@@ -21,10 +21,13 @@ TRANSACTION_STATUS = (
     ('failed','Failed'),
     ('completed','Completed'),
     ('pending','Pending'),
+    ('cancelled','Cancelled'),
     ('processing','Processing'),
     ('request_sent' ,'Request Sent'),
     ('request_processing' ,'Request Processing'),
     ('request_settled' ,'Request Settled' ),
+    ('request_declined' ,'Request Declined' ),
+
 )
 
 CARD_TYPE = (

@@ -27,8 +27,9 @@
                                                                 <div class="col-sm-5 text-center">
                                                                     <div class="icon-area">
                                                                         <h4><b>Requested</b></h4>
- 
-                                                                        <!-- <img style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;" src="{{transaction.reciever.kyc.image.url}}" alt="icon"> -->
+                                                                        <div class="icon-area">
+                                                                            <img src="{% static 'assets1/images/icon/transaction-details-icon.png' %}" alt="icon">
+                                                                        </div>
                                                                     </div>
                                                                     <div class="text-area"><br>
                                                                         <!-- <h5>Sender: <b>{{transaction.sender.kyc.full_name|title}}</b></h5> -->
@@ -70,7 +71,7 @@
                                                                         <ul class="payment-info">
                                                                             <li>
                                                                                 <p>Request From</p>
-                                                                                <span class="mdr">{{transaction.sender.kyc.full_name|title}}</span><br>
+                                                                                <span class="mdr">{{transaction.sender.kyc.full_name|title}}(Me)</span><br>
                                                                                 <span class="mdr">{{transaction.sender.account.account_number|title}}</span>
                                                                             </li>
                                                                             <li>

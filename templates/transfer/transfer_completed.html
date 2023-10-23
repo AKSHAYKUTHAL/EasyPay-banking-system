@@ -23,7 +23,7 @@
                             <p>Payment of <b>₹ {{transaction.amount}} </b> was send from your account <b> {{sender_account.account_number}}</b></p>
                             <p>Fee of <b>₹ {{transaction.fee}} </b> was deducted
                             <p>Payment of <b>₹ {{transaction.receiving_amount}} </b> was sent to <b>{{account.user.kyc.full_name}}</b></p>
-                            <h5><a href=""><b>View Detail</b></a> | <a href="{% url 'core:search_account' %}"><b>Send Another Payment</b></a></h5>
+                            <h5><a href="{% url 'core:transaction_detail_sent' transaction.transaction_id %}"><b>View Detail</b></a> | <a href="{% url 'core:search_account' %}"><b>Send Another Payment</b></a>  </h5>
                         </div>
                         <div class="share-link">
                             <p>Share direct link with your  payer</p>
@@ -32,7 +32,7 @@
                                     <a href="javascript:void(0)"><img src="{% static 'assets1/images/icon/whatsapp.png' %}" alt="icon"></a>
                                 </li>
                                 <li>
-                                    <a href="javascript:void(0)"><img src="{% static 'assets1/images/icon/facebook.png' %}" alt="icon"></a>
+                                    <a href="https://www.facebook.com/messages/t" target="_blank"><img src="{% static 'assets1/images/icon/facebook.png' %}" alt="icon"></a>
                                 </li>
                                 <li>
                                     <a href="javascript:void(0)"><img src="{% static 'assets1/images/icon/instagram.png' %}" alt="icon"></a>

@@ -1,4 +1,4 @@
-from core.models import Notification,History
+from core.models import Notification,History,Transaction
 
 
 def default(request):
@@ -10,8 +10,19 @@ def default(request):
         notifications = None
         history = None
 
+
+    try:
+        user_profile_pic = request.user.kyc.image
+        print(f"user_profile_pic: {user_profile_pic}")
+    except Exception as e:
+        user_profile_pic = None
+        print(f"Error fetching user_profile_pic: {e}")
+
+
+
     return {
         "notifications":notifications,
-        "history":history
+        "history":history,
+        'user_profile_pic':user_profile_pic
 
     }
