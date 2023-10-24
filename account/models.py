@@ -52,6 +52,7 @@ class Account(models.Model):
     kyc_submitted = models.BooleanField(default=False)
     kyc_confirmed = models.BooleanField(default=False)
     recommended_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='recommended_by')
+    deleted_account = models.BooleanField(default=False )
 
     class Meta:
         ordering = ['-date']

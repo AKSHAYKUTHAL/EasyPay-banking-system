@@ -53,7 +53,7 @@
                                     <img src="{% static 'assets1/images/icon/logout.png' %}" alt="image">
                                     Logout
                                 </a>
-                                <a href="javascript:void(0)" class="delete">
+                                <a href="" class="delete" data-bs-toggle="modal" data-bs-target="#delete_account">
                                     <img src="{% static 'assets1/images/icon/delete-2.png' %}" alt="image">
                                     Delete Account
                                 </a>
@@ -110,7 +110,7 @@
                                             </div>
                                         </div> -->
                                     </div>
-                                    <form action="#">
+                                    <form action="#" >
                                         <div class="row justify-content-center">
                                             <div class="col-md-6">
                                                 <div class="single-input">
@@ -121,55 +121,55 @@
                                             <div class="col-md-6">
                                                 <div class="single-input">
                                                     <label for="lName">Email</label>
-                                                    <input type="text" id="lName" placeholder="Email" value="{{ kyc.user.email }}">
+                                                    <input type="text" id="lName" readonly placeholder="Email" value="{{ kyc.user.email }}">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="single-input">
                                                     <label for="lName">Gender</label>
-                                                    <input type="text" id="lName" placeholder="Gender" value="{{ kyc.gender|title }}">
+                                                    <input type="text" id="lName" readonly placeholder="Gender" value="{{ kyc.gender|title }}">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="single-input">
                                                     <label for="lName">Marrital</label>
-                                                    <input type="text" id="lName" placeholder="Marrital Status" value="{{ kyc.marrital_status|title }}">
+                                                    <input type="text" id="lName" readonly placeholder="Marrital Status" value="{{ kyc.marrital_status|title }}">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="single-input">
                                                     <label for="lName">Date of Birth</label>
-                                                    <input type="text" id="lName" placeholder="Date Of Birth" value="{{ kyc.date_of_birth|date:'d M, Y' }}">
+                                                    <input type="text" id="lName" readonly placeholder="Date Of Birth" value="{{ kyc.date_of_birth|date:'d M, Y' }}">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="single-input">
                                                     <label for="lName">Mobile</label>
-                                                    <input type="text" id="lName" placeholder="Mobile Number" value="{{ kyc.mobile }}">
+                                                    <input type="text" id="lName" readonly placeholder="Mobile Number" value="{{ kyc.mobile }}">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="single-input">
                                                     <label for="lName">Identity Type</label>
-                                                    <input type="text" id="lName" placeholder="Identity Type" value="{{ kyc.identity_type|title }}">
+                                                    <input type="text" id="lName" readonly placeholder="Identity Type" value="{{ kyc.identity_type|title }}">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="single-input">
                                                     <label for="lName">Country</label>
-                                                    <input type="text" id="lName" placeholder="Country" value="{{ kyc.country|title }}">
+                                                    <input type="text" id="lName" readonly placeholder="Country" value="{{ kyc.country|title }}">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="single-input">
                                                     <label for="lName">State</label>
-                                                    <input type="text" id="lName" placeholder="State" value="{{ kyc.state|title }}">
+                                                    <input type="text" id="lName" readonly placeholder="State" value="{{ kyc.state|title }}">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="single-input">
                                                     <label for="lName">City</label>
-                                                    <input type="text" id="lName" placeholder="City" value="{{ kyc.city|title }}">
+                                                    <input type="text" id="lName" readonly placeholder="City" value="{{ kyc.city|title }}">
                                                 </div>
                                             </div>
                                             <div class="col-md-6 ">
@@ -189,11 +189,11 @@
                                                     {% endif %}
                                                 </div>
                                             </div>
-                                            <div class="col-md-12">
+                                            <!-- <div class="col-md-12">
                                                 <div class="btn-border">
                                                     <button class="cmn-btn">Edit KYC</button>
                                                 </div>
-                                            </div>
+                                            </div> -->
                                         </div>
                                     </form>
                                 </div>
@@ -216,29 +216,30 @@
                                                 <a href="javascript:void(0)">Forgot password?</a>
                                             </div>
                                             <div class="col-sm-6">
-                                                <form action="#">
+                                                <form action="{% url 'userauths:change_password' %}" method="post">
+                                                    {% csrf_token %}
                                                     <div class="row justify-content-center">
                                                         <div class="col-md-12">
                                                             <div class="single-input">
                                                                 <label for="current-password">Current password</label>
-                                                                <input type="text" id="current-password" placeholder="Current password">
+                                                                <input type="password" id="current_password" name="current_password" placeholder="Current password">
                                                             </div>
                                                         </div>
                                                         <div class="col-md-12">
                                                             <div class="single-input">
                                                                 <label for="new-password">New password</label>
-                                                                <input type="text" id="new-password" placeholder="New password">
+                                                                <input type="password" id="new_password" name="new_password" placeholder="New password">
                                                             </div>
                                                         </div>
                                                         <div class="col-md-12">
                                                             <div class="single-input">
                                                                 <label for="confirm-password">Confirm New password</label>
-                                                                <input type="text" id="confirm-password" placeholder="Confirm New password">
+                                                                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm New password">
                                                             </div>
                                                         </div>
                                                         <div class="col-md-12">
                                                             <div class="btn-border w-100">
-                                                                <button class="cmn-btn w-100">Update password</button>
+                                                                <button type="submit" class="cmn-btn w-100">Update password</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -536,5 +537,57 @@
         </div>
     </div>
 </div>
-<!-- My Card Popup start -->
+<!-- My Card Popup end -->
+
+
+<!-- Delete account start -->
+    <div class="transfer-popup">
+        <div class="container-fruid">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="modal fade" id="delete_account" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <ul class="nav nav-tabs d-none" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="transfer-tab" data-bs-toggle="tab"
+                                        data-bs-target="#transfer" type="button" role="tab" aria-controls="transfer"
+                                        aria-selected="true">Delete Account</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="success-tab" data-bs-toggle="tab"
+                                        data-bs-target="#success" type="button" role="tab" aria-controls="success"
+                                        aria-selected="false">Confirm</button>
+                                </li>
+                            </ul>
+                            <div class="tab-content" style="width: 400px;">
+                                <div class="tab-pane fade show active" id="transfer" role="tabpanel" aria-labelledby="transfer-tab">
+                                    <div class="modal-content">
+                                        <div class="modal-header mb-60 justify-content-between">
+                                            <h4 style="display: inline-block;"><b>Delete Account</b></h4>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                <i class="fa-solid fa-xmark" style="float: right;"></i>
+                                            </button>
+                                        </div>
+                                        <small class="" style="font-size: 15px;">When you delete the account will be in the system for one year, if there is any outstanding payment you will be contacted by the customer service, And if you want to recover the account kindly contact the customer service.</small>
+                                        <br><br><br>
+                                        <div class="main-content">
+                                            <p>Enter your pin number below</p>
+                                            <form action="{% url 'account:delete_account' account.id  %}" method="POST">
+                                                {% csrf_token %}
+                                                <div class="userInput">
+                                                    <input minlength="4" maxlength="4" name="pin_number" type="text">
+                                                </div>
+                                                <button type="submit" style="background-color: red;">Confirm</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- Delete account start -->
     {% endblock content %}

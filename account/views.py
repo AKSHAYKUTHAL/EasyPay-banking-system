@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from core.forms import CreditCardForm
 from core.models import CreditCard,Notification,History,Transaction
 import datetime
+from django.contrib.auth import authenticate,login,logout
+
 
 
 
@@ -14,7 +16,7 @@ def account(request):
         try:
             kyc = KYC.objects.get(user=request.user)
         except:
-            messages.error(request,'You need to sumit your KYC!')
+            messages.error(request,'You need to submit your KYC!')
             return redirect('account:kyc_reg')
         
         account = Account.objects.get(user=request.user)
@@ -26,6 +28,47 @@ def account(request):
         'account':account
     }
     return render(request,'account/account.html',context)
+
+
+
+def delete_account(request,id):
+    account = Account.objects.get(id=id, user=request.user)
+    credit_card = CreditCard.objects.filter(user=request.user)
+
+    credit_card_balance = 0
+
+    if request.method == 'POST':
+        pin_number = request.POST.get('pin_number')
+        
+        try:
+            for c in credit_card :
+                credit_card_balance += c.amount 
+        except:
+            credit_card_balance = 0
+
+
+        if account.account_balance <= 0 and account.deleted_account == False :
+            if credit_card_balance == 0:
+
+                if pin_number == account.pin_number:
+                    account.deleted_account = True
+                    account.save()
+                    logout(request)
+                    messages.success(request,'Your Account has been deleted, For any assistance please contact the Customer Service')
+                    return redirect('core:index')
+                else:
+                    messages.error(request,'Incorrect pin number')
+                    return redirect('account:account')
+            else:
+                messages.error(request,'You have balance amount in one of your cards, Please move the money first,then only try to delete account.')
+                return redirect('account:account')
+            
+        else:
+            messages.error(request,'You have balance amount in one your account, Please move the money first.')
+            return redirect('')
+
+
+
 
 @login_required
 def kyc_registration(request):
@@ -78,7 +121,7 @@ def dashboard(request):
         try:
             kyc = KYC.objects.get(user=request.user)
         except:
-            messages.error(request,'You need to sumit your KYC!')
+            messages.error(request,'You need to sumbit your KYC!')
             return redirect('account:kyc_reg')
         
         account = Account.objects.get(user=request.user)

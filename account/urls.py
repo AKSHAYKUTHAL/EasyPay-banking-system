@@ -7,5 +7,6 @@ urlpatterns = [
     path('dashborad/',views.dashboard,name='dashboard'),
     path('',views.account,name='account'),
     path('kyc_reg/',views.kyc_registration,name='kyc_reg'),
+    path('delete_account/<id>/',views.delete_account,name='delete_account'),
 
 ]

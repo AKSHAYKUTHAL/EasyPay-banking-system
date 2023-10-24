@@ -5,9 +5,16 @@ from core.models import CreditCard,Notification,History
 from account.models import Account
 import datetime
 from decimal import Decimal
+from account.models import KYC
 
 
 def all_credit_cards(request):
+    try:
+        kyc = KYC.objects.get(user=request.user)
+    except:
+        messages.error(request,'You need to submit your KYC!')
+        return redirect('account:kyc_reg')
+    
     account = Account.objects.get(user=request.user)
     credit_card = CreditCard.objects.filter(user=request.user)
 

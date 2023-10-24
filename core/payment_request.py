@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.contrib import messages
 from core.models import Transaction,Notification,History
 import time
+from account.models import KYC
 from decimal import Decimal
 
 
@@ -13,6 +14,12 @@ from decimal import Decimal
 
 @login_required
 def request_payment_search_account(request):
+    try:
+        kyc = KYC.objects.get(user=request.user)
+    except:
+        messages.error(request,'You need to submit your KYC!')
+        return redirect('account:kyc_reg')
+    
     account = Account.objects.all()
     query = request.POST.get('account_number')
 
@@ -199,6 +206,12 @@ def request_details_received(request,transaction_id):
 
 
 def request_settlement_confirmation(request, account_number, transaction_id):
+    try:
+        kyc = KYC.objects.get(user=request.user)
+    except:
+        messages.error(request,'You need to submit your KYC!')
+        return redirect('account:kyc_reg')
+    
     account = Account.objects.get(account_number=account_number)
     transaction = Transaction.objects.get(transaction_id=transaction_id)
 

@@ -1,5 +1,5 @@
 from core.models import Transaction
-from account.models import Account
+from account.models import Account,KYC
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect
@@ -17,6 +17,12 @@ def all_transactions(request):
 
 @login_required
 def transaction_list(request):
+    try:
+        kyc = KYC.objects.get(user=request.user)
+    except:
+        messages.error(request,'You need to submit your KYC!')
+        return redirect('account:kyc_reg')
+    
     sent_transaction = Transaction.objects.filter(sender=request.user,transaction_type='transfer').order_by('-id')
     recieved_transaction = Transaction.objects.filter(reciever=request.user,transaction_type='transfer').order_by('-id')
 

@@ -140,10 +140,9 @@
                                 
                             </ul>
                             <div class="tab-content mt-40">
-                                <div class="tab-pane fade show active" id="account" role="tabpanel"
-                                    aria-labelledby="account-tab">
+                                <div class="tab-pane fade show active" id="account" role="tabpanel" aria-labelledby="account-tab">
 
-                                    <form method="POST" enctype="multipart/form-data">
+                                    <form method="POST" enctype="multipart/form-data" id="kycForm" onsubmit="return validateAge()">
                                         {% csrf_token %}
                                         <div class="upload-avatar">
                                             <div class="avatar-left d-flex align-items-center">
@@ -242,76 +241,31 @@
                                             <br><br>
 
 
-
-
-
-
-
-
-<!--                                             
-                                            <div class="col-md-6">
-                                                <div class="single-input">
-                                                    <label for="email">Email</label>
-                                                    <div class="row input-status d-flex align-items-center">
-                                                        <div class="col-6">
-                                                            <input type="text" id="email" placeholder="alfred6598@gmail.com">
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <span class="pending">
-                                                                <img src="{% static 'assets1/images/icon/pending.png' %}" alt="icon">
-                                                                E-mail confirmation in pending
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="single-input">
-                                                    <label for="phone">Phone</label>
-                                                    <div class="row input-status d-flex align-items-center">
-                                                        <div class="col-6">
-                                                            <input type="text" id="phone" placeholder="(316) 555-0116">
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <span class="confirm">
-                                                                <img src="{% static 'assets1/images/icon/confirm.png' %}" alt="icon">
-                                                                Phone number confirm
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="single-input file">
-                                                    <label>ID Confirmation documents</label>
-                                                    <div class="row input-status d-flex align-items-center">
-                                                        <div class="col-6">
-                                                            <div class="file-upload">
-                                                                <div class="right-area">
-                                                                    <label class="file">
-                                                                        <input type="file">
-                                                                        <span class="file-custom"></span>
-                                                                    </label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <span class="notconfirm">
-                                                                <img src="{% static 'assets1/images/icon/not-confirm.png' %}" alt="icon">
-                                                                Person not confirmed
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div> -->
-                                            
                                             <div class="col-md-12">
                                                 <div class="btn-border">
-                                                    <button class="cmn-btn" type="submit">Submit KYC</button>
+                                                    <button class="cmn-btn" type="submit" >Submit KYC</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </form>
+                                    <script>
+                                        function validateAge() {
+                                            var dob = new Date(document.getElementById('id_date_of_birth').value);
+                                            var now = new Date();
+                                            var age = now.getFullYear() - dob.getFullYear();
+                                            var monthDiff = now.getMonth() - dob.getMonth();
+                                            if (monthDiff < 0 || (monthDiff === 0 && now.getDate() < dob.getDate())) {
+                                                age--;
+                                            }
+                                            if (age < 18) {
+                                                alert("You must be at least 18 years old to complete the registration.");
+                                                return false; // Prevent form submission
+                                            } else {
+                                                return true; // Allow form submission
+                                            }
+                                        }
+                                    </script>
+                                    
                                 </div>
                                 <div class="tab-pane fade" id="security" role="tabpanel"
                                     aria-labelledby="security-tab">

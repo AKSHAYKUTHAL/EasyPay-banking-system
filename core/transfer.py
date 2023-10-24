@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from account.models import Account
+from account.models import Account,KYC
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib import messages
@@ -18,6 +18,13 @@ config = pdfkit.configuration(wkhtmltopdf=r"C:/Program Files/wkhtmltopdf/bin/wkh
 
 @login_required
 def search_users_account_number(request):
+
+    try:
+        kyc = KYC.objects.get(user=request.user)
+    except:
+        messages.error(request,'You need to submit your KYC!')
+        return redirect('account:kyc_reg')
+    
     # account = Account.objects.filter(account_status='active')
     account = Account.objects.all()
     query = request.POST.get('account_number')
