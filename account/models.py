@@ -81,6 +81,7 @@ class KYC(models.Model):
 
     #Contact Detail
     mobile = models.CharField(max_length=25)
+    is_mobile_verfied = models.BooleanField(default=False)
     fax = models.CharField(max_length=25)
     date = models.DateTimeField(auto_now_add=True)
 

@@ -7,6 +7,7 @@ from core.forms import CreditCardForm
 from core.models import CreditCard,Notification,History,Transaction
 import datetime
 from django.contrib.auth import authenticate,login,logout
+from userauths.models import User
 
 
 
@@ -20,12 +21,55 @@ def account(request):
             return redirect('account:kyc_reg')
         
         account = Account.objects.get(user=request.user)
+        credit_card = CreditCard.objects.filter(user=request.user).order_by('-id')
+
+        form = CreditCardForm(request.POST)
+
+
+        month = datetime.datetime.now().month
+        year = datetime.datetime.now().year + 5
+
+        if request.method == 'POST':
+            form = CreditCardForm(request.POST)
+            if form.is_valid():
+                new_form = form.save(commit=False)
+                new_form.user = request.user
+                new_form.name = request.user.kyc.full_name
+                # new_form.amount = request.user.account.account_balance
+                new_form.save()
+
+                credit_card_id = new_form.credit_card_id
+
+                Notification.objects.create(
+                    user=request.user,
+                    notification_type="Added Credit Card",
+                    card_number = new_form.format_card_number(),
+                    card_type = new_form.card_type,
+                    card_tier = new_form.card_tier
+                )
+                History.objects.create(
+                    user=request.user,
+                    history_type="Added Credit Card",
+                    card_number = new_form.format_card_number(),
+                    card_type = new_form.card_type,
+                    card_tier = new_form.card_tier
+                )
+
+                messages.success(request,'Card Added Successfully.')
+                return redirect('account:account')
+        else:
+            form = CreditCardForm()
+
     else:
         messages.error(request,'You need to login to access the dashboard')
         return redirect('userauths:sign_in')
     context = {
         'kyc':kyc,
-        'account':account
+        'account':account,
+        'credit_card':credit_card,
+        'month':month,
+        'year':year,
+        'form':form
     }
     return render(request,'account/account.html',context)
 
@@ -182,3 +226,19 @@ def dashboard(request):
 
     }
     return render(request,'account/dashboard.html',context)
+
+
+def is_2fa(request):
+    user = request.user
+    
+    if user.is_2fa == True:
+        user.is_2fa = False
+        user.save()
+        messages.success(request,'You disabled the 2FA')
+        return redirect('account:account')
+    else:
+        user.is_2fa = True
+        user.save()
+        messages.success(request,'You Enabled the 2FA')
+        return redirect('account:account')
+

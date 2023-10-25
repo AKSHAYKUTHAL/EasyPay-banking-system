@@ -47,7 +47,7 @@
                         <div class="send-banance">
                             <span class="mdr">You Request</span>
                             <div class="input-area">
-                                <input class="xxlr" placeholder="Enter Amount Request" type="number" name="amount_request" id="amount-request">
+                                <input class="xxlr" onkeyup="check_decimal()" placeholder="Enter Amount Request" type="number" name="amount_request" id="amount_request" step="0.01" pattern="[0-9]+([.,][0-9]+)?">
                                 <select>
                                     <option value="1">USD</option>
                                     <option value="2">USD</option>
@@ -75,5 +75,19 @@
         </div>
     </section>
     <!-- Dashboard Section end -->
+    <script>
+        function check_decimal(){
+            let request_amount_input = document.getElementById("amount_request");
+            let request_amount = request_amount_input.value;
+
+
+            let decimalIndex = request_amount.indexOf('.');
+            if (decimalIndex !== -1 && request_amount.length - decimalIndex > 3) {
+                request_amount_input.value = request_amount.substring(0, decimalIndex + 3);
+                request_amount = request_amount_input.value;
+            }
+    
+        }
+    </script>
 
     {% endblock content %}

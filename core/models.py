@@ -64,6 +64,18 @@ NOTIFICATION_TYPE = (
     ("De-Activated Credit Card", "De-Activated Credit Card"),
 
 )
+# NOTIFICATION_CATEGORY =(
+#     ("annoucements", "Annoucements"),
+#     ("None", "None"),
+#     ("None", "None"),
+#     ("None", "None"),
+#     ("None", "None"),
+#     ("None", "None"),
+#     ("None", "None"),
+#     ("None", "None"),
+#     ("None", "None"),
+# )
+
 HISTORY_TYPE = (
     ("None", "None"),
     ("Transfer", "Transfer"),
@@ -105,10 +117,9 @@ class Transaction(models.Model):
     updated = models.DateTimeField(auto_now_add=False,null=True, blank=True)
 
     def fee(self):
-        # fee = self.amount * Decimal('.03')  # Using Decimal('0.035') instead of 3.5 / 100
-        # return fee.quantize(Decimal('.01'), rounding=ROUND_HALF_UP)  # Rounding to 2 decimal places
-        fee = 0
-        return fee
+        fee = self.amount * Decimal('.0')  # Using Decimal('0.035') instead of 3.5 / 100
+        return fee.quantize(Decimal('.01'), rounding=ROUND_HALF_UP)  # Rounding to 2 decimal places
+
 
     def transaction_year(self):
         return self.date.year

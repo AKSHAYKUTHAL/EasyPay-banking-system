@@ -6,7 +6,7 @@ from django.contrib import messages
 from userauths.models import User
 from django.views.decorators.csrf import csrf_protect
 from django.db import IntegrityError
-from account.models import Account
+from account.models import Account,KYC
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
@@ -14,6 +14,9 @@ from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
+from account.mixins import MessageHandler
+import random
+import uuid
 
 
 
@@ -77,6 +80,29 @@ def login_view(request):
             user = User.objects.get(email=email)
             user = authenticate(request, email=email, password=password)
 
+            kyc = KYC.objects.get(user=user)
+            if user.is_2fa and user is not None : 
+                user.otp = random.randint(100000,999999)
+                user.save()
+
+                def format_phone_number(phone_number):
+                    phone_number = phone_number.replace(" ", "")
+                    if not phone_number.startswith('+'):
+                        phone_number = '+' + phone_number
+                    return phone_number
+                user.uid = random.randint(12345678,99999999)
+                user.save()
+                
+                phone_number = format_phone_number(kyc.mobile)
+
+                message_handler = MessageHandler(phone_number,user.otp).send_otp_on_phone()
+                messages.success(request,'The otp is sent to your phone number.')
+                return redirect('userauths:confirm_otp',user.uid)
+            
+
+
+            else:
+                user = authenticate(request, email=email, password=password)
             if user is not None:
                 account = Account.objects.get(user=user)
                 if account.deleted_account:
@@ -102,6 +128,58 @@ def login_view(request):
         return redirect('account:account')
 
     return render(request, 'userauths/sign_in.html')
+
+
+
+def confirm_otp(request,uid):
+    user = User.objects.get(uid=uid)
+
+    if request.method == 'POST':
+        user = User.objects.get(uid=uid)
+        otp_number = request.POST.get('otp_number')
+
+        if otp_number == user.otp:
+            login(request, user)
+            messages.get_messages(request).used = True
+            messages.success(request, 'You are logged in successfully.')
+            return redirect('account:account')
+        else:
+            messages.error(request,'Incorrect OTP,Try again.')
+    
+    context = {
+        'uid':uid
+    }
+    
+    return render(request,'userauths/confirm_otp.html',context)
+
+
+def send_otp_again(request,uid):
+    try:
+        user = User.objects.get(uid=uid)
+
+        kyc = KYC.objects.get(user=user)
+        if user.is_2fa and user is not None : 
+            user.otp = random.randint(100000,999999)
+            user.save()
+
+            def format_phone_number(phone_number):
+                phone_number = phone_number.replace(" ", "")
+                if not phone_number.startswith('+'):
+                    phone_number = '+' + phone_number
+                return phone_number
+              
+            phone_number = format_phone_number(kyc.mobile)
+
+            message_handler = MessageHandler(phone_number,user.otp).send_otp_on_phone()
+            messages.success(request,'The otp is sent to your phone number.')
+            return redirect('userauths:confirm_otp',user.uid)
+            
+    except:
+        messages.success(request,'An Error Occured, Try Again')
+        return redirect('userauths:sign_in')
+
+
+
 
 
 def logout_view(request):

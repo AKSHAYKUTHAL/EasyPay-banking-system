@@ -1,5 +1,6 @@
 {% extends "partials/dashboard_base.html" %}
 {% load static %}
+{% load humanize %}
 {% block content %}
     <!-- Dashboard Section start -->
 <section class="dashboard-section body-collapse account">
@@ -67,23 +68,23 @@
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link active" id="account-tab" data-bs-toggle="tab"
                                         data-bs-target="#account" type="button" role="tab" aria-controls="account"
-                                        aria-selected="true">Account</button>
+                                        aria-selected="true" style="width: 300px;">Account</button>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="security-tab" data-bs-toggle="tab"
                                         data-bs-target="#security" type="button" role="tab" aria-controls="security"
-                                        aria-selected="false">Security</button>
+                                        aria-selected="false" style="width: 300px;">Security</button>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="payment-tab" data-bs-toggle="tab"
                                         data-bs-target="#payment" type="button" role="tab" aria-controls="payment"
-                                        aria-selected="false">Payment Methods</button>
+                                        aria-selected="false" style="width:     300px;">Payment Methods</button>
                                 </li>
-                                <li class="nav-item" role="presentation">
+                                <!-- <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="notification-tab" data-bs-toggle="tab"
                                         data-bs-target="#notification" type="button" role="tab"
                                         aria-controls="notification" aria-selected="false">Notification</button>
-                                </li>
+                                </li> -->
                             </ul>
                             <div class="tab-content mt-40">
                                 <div class="tab-pane fade show active" id="account" role="tabpanel"
@@ -118,12 +119,14 @@
                                                     <input type="text" id="fName" readonly placeholder="Full Name" value="{{kyc.full_name|title}}">
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="single-input">
-                                                    <label for="lName">Email</label>
-                                                    <input type="text" id="lName" readonly placeholder="Email" value="{{ kyc.user.email }}">
+                                            <form action="" method="post">
+                                                <div class="col-md-6">
+                                                    <div class="single-input">
+                                                        <label for="lName">Email</label>
+                                                        <input type="text" id="lName" readonly placeholder="Email" value="{{ kyc.user.email }}">
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            </form>
                                             <div class="col-md-6">
                                                 <div class="single-input">
                                                     <label for="lName">Gender</label>
@@ -199,21 +202,31 @@
                                 </div>
                                 <div class="tab-pane fade" id="security" role="tabpanel"
                                     aria-labelledby="security-tab">
-                                    <div class="single-content authentication d-flex align-items-center justify-content-between">
-                                        <div class="left">
-                                            <h5>Two Factor Authentication</h5>
-                                            <p>Two-Factor Authentication (2FA) can be used to help protect your account</p>
+                                    <form action="{% url 'account:is_2fa' %}" method="post">
+                                        {% csrf_token %}
+                                        <div class="single-content authentication d-flex align-items-center justify-content-between">
+                                            <div class="left">
+                                                <h5>Two Factor Authentication (OTP)</h5>
+                                                <p>Two-Factor Authentication (2FA) can be used to help protect your account</p>
+                                            </div>
+                                            {% if user.is_2fa %}
+                                                <div class="right">
+                                                    <button type="submit">Disable</button>
+                                                </div>
+                                            {% else %}
+                                                <div class="right">
+                                                    <button type="submit">Enable</button>
+                                                </div>
+                                            {% endif %}
+                                                
                                         </div>
-                                        <div class="right">
-                                            <button>Enable</button>
-                                        </div>
-                                    </div>
+                                    </form>
                                     <div class="change-pass mb-40">
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <h5>Change Password</h5>
                                                 <p>You can always change your password for security reasons or reset your password in case you forgot it.</p>
-                                                <a href="javascript:void(0)">Forgot password?</a>
+                                                <a href="{% url 'userauths:forgot_password' %}">Forgot password?</a>
                                             </div>
                                             <div class="col-sm-6">
                                                 <form action="{% url 'userauths:change_password' %}" method="post">
@@ -247,7 +260,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="single-content additional-security">
+                                    <!-- <div class="single-content additional-security">
                                         <h5>Additional security</h5>
                                         <div class="single-setting">
                                             <div class="left">
@@ -324,42 +337,96 @@
                                                 <button>Log out</button>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
                                 <div class="tab-pane pb-120 fade" id="payment" role="tabpanel"
                                     aria-labelledby="payment-tab">
-                                    <div class="card-area">
-                                        <h6>Linked Payment system</h6>
-                                        <div class="card-content d-flex flex-wrap">
-                                            <div class="single-card">
-                                                <button type="button" class="reg w-100" data-bs-toggle="modal" data-bs-target="#transactionsMod">
-                                                    <img src="{% static 'assets1/images/visa-card.png' %}" alt="image" class="w-100">
-                                                </button>
+                                    <div class="single-item">
+                                        <div class="section-text d-flex align-items-center justify-content-between">
+                                            <h6>Linked Payment system</h6>
+                                            <div class="right-side">
+                                                <div class="dropdown-area">
+                                                    <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <img src="{% static 'assets1/images/icon/option.png' %}" alt="icon">
+                                                    </button>
+                                                    
+                                                </div>
                                             </div>
-                                            <div class="single-card">
-                                                <button type="button" class="reg w-100" data-bs-toggle="modal" data-bs-target="#transactionsMod">
-                                                    <img src="{% static 'assets1/images/paylio-card.png' %}" alt="image" class="w-100">
-                                                </button>
-                                            </div>
-                                            <div class="single-card">
-                                                <button type="button" class="reg w-100" data-bs-toggle="modal" data-bs-target="#transactionsMod">
-                                                    <img src="{% static 'assets1/images/paypal-card.png' %}" alt="image" class="w-100">
-                                                </button>
-                                            </div>
-                                            <div class="single-card">
-                                                <button type="button" class="reg w-100" data-bs-toggle="modal" data-bs-target="#transactionsMod">
-                                                    <img src="{% static 'assets1/images/blockchain-card.png' %}" alt="image" class="w-100">
-                                                </button>
-                                            </div>
-                                            <div class="single-card">
-                                                <button type="button" class="reg w-100" data-bs-toggle="modal" data-bs-target="#addcardMod">
-                                                    <img src="{% static 'assets1/images/add-new.png' %}" alt="image" class="w-100">
-                                                </button>
+                                        </div>
+                                        <div class="row">               
+                                            {% for c in credit_card %}
+                                                <a href="{% url 'core:credit_card_detail' c.credit_card_id %}">
+                                                    <div class="col-12">
+                                                        <div class="card__main" style="height: 230px; width: 400px;">
+                                                            <div class="{% if c.card_type == 'rupay' %}Front_card{% endif %}    {% if c.card_type == 'master' %}masterCard{% endif %}    {% if c.card_type == 'visa' %}visaCard{% endif %}">
+                                                            <div class="top_card"  style="padding: 15px;">
+                                                                <span class="visa">{{c.card_type|upper}}  <small style="font-weight: lighter; font-size:11px" class="{% if c.card_tier == 'classic' %}classic_card{% endif %}    {% if c.card_type == 'gold' %}gold_card{% endif %}    {% if c.card_type == 'platinum' %}platinum_card{% endif %}   {% if c.card_type == 'signature' %}signature_card{% endif %}  {% if c.card_type == 'infinite' %}infinite_card{% endif %}">{{c.card_tier|upper}}</small> </span>  
+                                                                <div class="logo">
+                                                                    <img src="{% static 'assets1/images/easypay_logo.png' %}" alt="logo">
+                                                                    <div class="image-container" style="display: flex;">
+                                                                        <img src="{% static 'assets1/images/icon/chip.png' %}"  alt="" style="width: 40px; height: 35px; margin-left: 75px; margin-top: 25px;">  
+                                                                        <img src="{% static 'assets1/images/icon/sigmal_icon.png' %}"  alt="" style="width: 18px; height: 28px; margin-left: 3px;  margin-top: 28px;">    
+                                                                    </div>                                                             
+                                                                </div>
+                                                            </div>
+                                                            <div class="middle_card">
+                                                            </div>
+                                                            <div class="bottom_card">
+                                                                <div class="card_info">
+                                                                    <div class="card_holder_name">₹ {{c.amount|intcomma }} </div>                                  
+                                                                    <div class="card_number">{{c.format_card_number}}</div>
+                                                                    <div class="card_holder_name">{{c.name}}</div>
+                                                                    <div>
+                                                                        {% if c.card_status == True %}
+                                                                        <span style="color: rgb(4, 203, 4); font-weight: bolder;">Active</span>
+                                                                        {% else %}
+                                                                        <span style="color: #fc0034; font-weight: bold;">In-Active</span>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="card_info">
+                                                                <div class="card_holder_info" style="margin-top: 80px;">
+                                                                    <span class="expire_month" >{{c.month}}</span>
+                                                                    <span class="slash">/</span>
+                                                                    <span class="expire_year">{{c.year_in_two_digits}}</span>
+                                                                </div>
+                                                                </div>
+                                                            </div>
+                                                            </div>
+                                                            <div class="back_card">
+                                                            <div class="top_card">
+                                                                <span class="black_strip"></span>
+                                                                <div class="cvc_strip">
+                                                                <span class="cvc_number">{{c.cvv}}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="bottom_card">
+                                                                <div class="flex">
+                                                                <span class="sticker"></span>
+                                                                <div class="logo1">
+                                                                    <span></span>
+                                                                    <span></span>
+                                                                    <span></span>
+                                                                </div>
+                                                                </div>
+                                                            </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            {% endfor %}
+                                            
+                                            <div class="col-4">
+                                                <div class="single-card">
+                                                    <button type="button" class="reg w-100" data-bs-toggle="modal" data-bs-target="#addcardMod">
+                                                        <img src="{% static 'assets1/images/add-new.png' %}" alt="image" class="w-100">
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane fade" id="notification" role="tabpanel"
+                                <!-- <div class="tab-pane fade" id="notification" role="tabpanel"
                                     aria-labelledby="notification-tab">
 
                                     <div class="notification-single">
@@ -404,7 +471,7 @@
                                             <span class="slider round"></span>
                                         </label>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>
@@ -415,129 +482,7 @@
 </section>
 <!-- Dashboard Section end -->
 
-<!-- Add Card Popup start -->
-<div class="add-card">
-    <div class="container-fruid">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="modal fade" id="addcardMod" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header justify-content-between">
-                                <h6>Add Card</h6>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
-                            </div>
-                            <form action="#">
-                                <div class="row justify-content-center">
-                                    <div class="col-md-12">
-                                        <div class="single-input">
-                                            <label for="cardNumber">Card Number</label>
-                                            <input type="text" id="cardNumber" placeholder="5890 - 6858 - 6332 - 9843">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="single-input">
-                                            <label for="cardHolder">Card Holder</label>
-                                            <input type="text" id="cardHolder" placeholder="Alfred Davis">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="single-input">
-                                            <label for="month">Month</label>
-                                            <input type="text" id="month" placeholder="12">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="single-input">
-                                            <label for="year">Year</label>
-                                            <input type="text" id="year" placeholder="2025">
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="btn-border w-100">
-                                            <button class="cmn-btn w-100">Add Card</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Add Card Popup start -->
 
-<!-- My Card Popup start -->
-<div class="transactions-popup mycard">
-    <div class="container-fruid">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="modal fade" id="transactionsMod" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header justify-content-between">
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
-                            </div>
-                            <div class="main-content">
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        <h5>My Cards</h5>
-                                        <div class="icon-area">
-                                            <img src="{% static 'assets1/images/popup-card.png' %}" alt="image" class="w-100">
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-8">
-                                        <div class="right-area">
-                                            <div class="top-area d-flex align-items-center justify-content-between">
-                                                <div class="card-details d-flex align-items-center">
-                                                    <img src="{% static 'assets1/images/icon/mastercard.png' %}" alt="image">
-                                                    <span>5880 **** **** 8854</span>
-                                                </div>
-                                                <a href="javascript:void(0)">
-                                                    <i class=""></i>
-                                                    Edit
-                                                </a>
-                                            </div>
-                                            <ul class="payment-details">
-                                                <li>
-                                                    <span>Card Type:</span>
-                                                    <span>Visa</span>
-                                                </li>
-                                                <li>
-                                                    <span>Card Holder:</span>
-                                                    <span>Alfred Davis</span>
-                                                </li>
-                                                <li>
-                                                    <span>Expires:</span>
-                                                    <span>12/19</span>
-                                                </li>
-                                                <li>
-                                                    <span>Card Number:</span>
-                                                    <span>5880 5087 3288 8854</span>
-                                                </li>
-                                                <li>
-                                                    <span>Total Balance:</span>
-                                                    <span>80,700.00</span>
-                                                </li>
-                                                <li>
-                                                    <span>Total Debt:</span>
-                                                    <span>8,250.00</span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- My Card Popup end -->
 
 
 <!-- Delete account start -->
@@ -590,4 +535,78 @@
         </div>
     </div>
 <!-- Delete account start -->
+ <!-- Add Card Popup start -->
+ <div class="add-card">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="modal fade" id="addcardMod" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header justify-content-between">
+                                <h6>Add Card</h6>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                            <form method="POST" action="" >
+                                {% csrf_token %}
+                                <div class="row justify-content-center">
+                                    <div class="col-md-12">
+                                        <label for="cardNumber">Card name :</label>
+                                        <div class="single-input">
+                                            <b>{{kyc.full_name|title}}</b>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label for="cardName">Card Number</label>
+                                        <div class="single-input">
+                                            <b>47** **** **** ****</b>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="expiryMonth">Expiry Month</label>
+                                        <div class="single-input">
+                                            {{month}}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="expiryYear">Expiry Year</label>
+                                        <div class="single-input">
+                                            {{year}}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label for="cvv">CVV</label>
+                                        <div class="single-input">
+                                            <b>***</b>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="cardType">Card Type</label>
+                                        <div class="single-input">
+                                            {{form.card_type}}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="cardTier">Card Tier</label>
+                                        <div class="single-input">
+                                            {{form.card_tier}}
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="btn-border w-100">
+                                            <button type="submit" class="cmn-btn w-100">Add Card</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Add Card Popup end -->
     {% endblock content %}
