@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,10 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-skkxdsjcff0@7(auvv&%q%6sg2d)0cili!(ram)-kdf!55r_!g'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = []
 
@@ -186,12 +188,12 @@ JAZZMIN_UI_TWEAKS = {
 
 
 # Email settings for sending emails through Gmail (example)
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'akshaykuthal99@gmail.com'
-EMAIL_HOST_PASSWORD = 'orhnhphyfvspputl'
+EMAIL_BACKEND = config('EMAIL_BACKEND')
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD') 
 
 
 TIME_ZONE =  'Asia/Kolkata'
@@ -199,5 +201,5 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-ACCOUNT_SID = 'AC474b37f77f98b1479d9a5ea70984f0b2'
-AUTH_TOKEN = 'cf3f0d14fbdf349794b53ff1dd880652'
+ACCOUNT_SID = config('ACCOUNT_SID') 
+AUTH_TOKEN = config('AUTH_TOKEN')
