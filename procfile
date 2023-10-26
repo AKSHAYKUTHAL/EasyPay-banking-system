@@ -1,0 +1,1 @@
+web: gunicorn easypay.wsgi --log-file -
