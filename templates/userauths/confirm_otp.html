@@ -16,9 +16,9 @@
                     <div class="col-xl-5">
                         <div class="section-text text-center">
                             <h2 class="title">Confirm OTP</h2>
-                            <p class="dont-acc">Didn't get otp <a href="{% url 'userauths:send_otp_again' uid %}">Send again</a></p>                            
+                            <p class="dont-acc">Didn't get otp <a href="{% url 'userauths:send_otp_again' user_id %}">Send again</a></p>                            
                         </div>
-                        <form method="POST" action="{% url 'userauths:confirm_otp' uid %}">
+                        <form method="POST" action="{% url 'userauths:confirm_otp' user_id %}">
                             {% csrf_token %}
                             <div class="alert-danger alet">
                             </div>

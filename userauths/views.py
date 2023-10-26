@@ -17,7 +17,8 @@ from django.core.mail import EmailMessage
 from account.mixins import MessageHandler
 import random
 import uuid
-
+from django.core.mail import EmailMultiAlternatives
+from django.utils.html import strip_tags
 
 
 
@@ -90,14 +91,14 @@ def login_view(request):
                     if not phone_number.startswith('+'):
                         phone_number = '+' + phone_number
                     return phone_number
-                user.uid = random.randint(12345678,99999999)
+                user.user_id = random.randint(12345678,99999999)
                 user.save()
                 
                 phone_number = format_phone_number(kyc.mobile)
 
                 message_handler = MessageHandler(phone_number,user.otp).send_otp_on_phone()
                 messages.success(request,'The otp is sent to your phone number.')
-                return redirect('userauths:confirm_otp',user.uid)
+                return redirect('userauths:confirm_otp',user.user_id)
             
 
 
@@ -131,11 +132,11 @@ def login_view(request):
 
 
 
-def confirm_otp(request,uid):
-    user = User.objects.get(uid=uid)
+def confirm_otp(request,user_id):
+    user = User.objects.get(user_id=user_id)
 
     if request.method == 'POST':
-        user = User.objects.get(uid=uid)
+        user = User.objects.get(user_id=user_id)
         otp_number = request.POST.get('otp_number')
 
         if otp_number == user.otp:
@@ -147,15 +148,15 @@ def confirm_otp(request,uid):
             messages.error(request,'Incorrect OTP,Try again.')
     
     context = {
-        'uid':uid
+        'user_id':user_id
     }
     
     return render(request,'userauths/confirm_otp.html',context)
 
 
-def send_otp_again(request,uid):
+def send_otp_again(request,user_id):
     try:
-        user = User.objects.get(uid=uid)
+        user = User.objects.get(user_id=user_id)
 
         kyc = KYC.objects.get(user=user)
         if user.is_2fa and user is not None : 
@@ -172,7 +173,7 @@ def send_otp_again(request,uid):
 
             message_handler = MessageHandler(phone_number,user.otp).send_otp_on_phone()
             messages.success(request,'The otp is sent to your phone number.')
-            return redirect('userauths:confirm_otp',user.uid)
+            return redirect('userauths:confirm_otp',user.user_id)
             
     except:
         messages.success(request,'An Error Occured, Try Again')
@@ -230,8 +231,19 @@ def forgot_password(request):
                 'uid':urlsafe_base64_encode(force_bytes(user.pk)),
                 'token':default_token_generator.make_token(user),
             })
+
+            plain_message = strip_tags(message)
+
+
             to_email = email
-            send_email = EmailMessage(mail_subject,message,to=[to_email])
+            send_email = EmailMultiAlternatives(
+                subject=mail_subject,
+                body = plain_message,
+                to=[to_email]
+                )
+            send_email.attach_alternative(message,'text/html')
+
+
             send_email.send()
             messages.success(request,'Password reset email has been sent to your email address.')
             return redirect('userauths:sign_in')
