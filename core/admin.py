@@ -24,6 +24,6 @@ class HistoryAdmin(admin.ModelAdmin):
 admin.site.register(Transaction,TransactionAdmin)
 admin.site.register(CreditCard,CreditCardAdmin)
 admin.site.register(Notification, NotificationAdmin)
-admin.site.register(History, HistoryAdmin)
+admin.site.register(History, HistoryAdmin)  
 
 
